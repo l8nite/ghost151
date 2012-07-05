@@ -8,7 +8,7 @@ package edu.sjsu.cs.ghost151;
  *
  */
 public class Board {
-
+	
 	private BoardObject grid[][];
 
 	/**

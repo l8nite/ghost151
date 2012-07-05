@@ -9,9 +9,26 @@ package edu.sjsu.cs.ghost151;
  */
 public class BoardObject {
 
+	private int boardSizeX = 10;
+	private int boardSizeY = 10;
+	private int boardGrid[][] = null;
 	private BoardPosition position;
 	private BoardObjectType type;
 	protected Board board;
+	
+	/**
+	 * @param setBoardSize set the grid size
+	 */
+	public void setBoardSize(){
+		this.boardGrid = new int[boardSizeX][boardSizeY];
+	}
+	/**
+	 * @param the boardGrid
+	 */
+	public int[][] getBoardSize(){
+		return this.boardGrid;
+	}
+	
 	/**
 	 * @return the position
 	 */
