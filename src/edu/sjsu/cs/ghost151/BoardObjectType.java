@@ -15,14 +15,13 @@ public enum BoardObjectType {
 	
 	private final String representation;
 	
-	private BoardObjectType(String representation) {
+	private BoardObjectType(String representation)
+	{
 		this.representation = representation;
 	}
-
-	/**
-	 * @return the representation
-	 */
-	public String getRepresentation() {
+	
+	public String toString()
+	{
 		return representation;
 	}
 }

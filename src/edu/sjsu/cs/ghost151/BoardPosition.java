@@ -7,31 +7,46 @@ package edu.sjsu.cs.ghost151;
  * @author shaung
  *
  */
-public class BoardPosition {
+public class BoardPosition 
+{
 	private int row;
 	private int column;
+	
+	public BoardPosition(int row, int column)
+	{
+		this.row = row;
+		this.column = column;
+	}
+	
 	/**
 	 * @return the row
 	 */
-	public int getRow() {
+	public int getRow() 
+	{
 		return row;
 	}
+	
 	/**
 	 * @param row the row to set
 	 */
-	public void setRow(int row) {
+	public void setRow(int row) 
+	{
 		this.row = row;
 	}
+	
 	/**
 	 * @return the column
 	 */
-	public int getColumn() {
+	public int getColumn() 
+	{
 		return column;
 	}
+	
 	/**
 	 * @param column the column to set
 	 */
-	public void setColumn(int column) {
+	public void setColumn(int column) 
+	{
 		this.column = column;
 	}
 	
