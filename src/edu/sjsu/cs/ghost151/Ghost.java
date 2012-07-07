@@ -1,46 +1,73 @@
-/**
- * 
- */
 package edu.sjsu.cs.ghost151;
 
 import java.util.Random;
 
 /**
- * @author shaung
+ * <b>Ghost</b>
+ * will communicate with other Ghosts to acquire a target and be aware
+ * of areas already visited by each other. The Ghost will search for the target
+ * (PacMan) and maintain a log of areas visited. If the target is acquired, it
+ * will notify the Game.
  *
+ * @author      Alben Cheung
+ * @author      MD Ashfaqul Islam
+ * @author      Shaun Guth
+ * @author      Jerry Phul
  */
 public class Ghost extends BoardObject 
 {
 	private BoardObjectType exploredPositions[][];
 	private boolean targetAcquired = false;
 	
+
+        /**
+         * Construct a Ghost object that is aware of positions its explored.
+         */
 	public Ghost()
 	{
 		super(BoardObjectType.Ghost);
 		exploredPositions = new BoardObjectType[board.getRowCount()][board.getColumnCount()];
 	}
 
-	/**
-	 * @return the exploredPositions
-	 */
+
+        /**
+         * Get the explored positions.
+         *
+         * @return          the explored positions array
+         */
 	public BoardObjectType[][] getExploredPositions() 
 	{
 		return exploredPositions;
 	}
 
-	/**
-	 * @param exploredPositions the exploredPositions to set
-	 */
+
+        /**
+         * Set the explored positions for the object.
+         *
+         * @param exploredPositions       set the explored positions array
+         */
 	public void setExploredPositions(BoardObjectType[][] exploredPositions) 
 	{
 		this.exploredPositions = exploredPositions;
 	}
 
+
+        /**
+         * returns a boolean value if the target was acquired by the object.
+         *
+         * @return          boolean value
+         */
 	public boolean IsTargetAcquired() 
 	{
 		return targetAcquired;
 	}
 
+
+        /**
+         * Synchronize places explored between Ghost objects.
+         *
+         * @param ghost       the Ghost object to communicate with
+         */
 	public void CommunicateWith(Ghost ghost)
 	{
 		BoardObjectType[][] incoming = ghost.getExploredPositions();
@@ -57,6 +84,12 @@ public class Ghost extends BoardObject
 		}
 	}
 	
+
+        /**
+         * Update the Ghost object of surrounding area. If the target was seen,
+         * then move to it else look for a Ghost to communicate with it.
+         * Finally, move to a new location and update Ghost object's position.
+         */
 	public void Update()
 	{
 		BoardObject[] surroundings = board.GetSurroundings(this);
@@ -95,6 +128,12 @@ public class Ghost extends BoardObject
 		}
 	}
 	
+
+        /**
+         * Move an object from it's current position to a new position.
+         *
+         * @param newPosition       the object's new position
+         */
 	private void MoveTo(BoardPosition newPosition)
 	{
 		// we can't move into anything but empty space

@@ -1,11 +1,14 @@
-/**
- * 
- */
 package edu.sjsu.cs.ghost151;
 
 /**
- * @author shaung
+ * <b>BoardObject</b>
+ * determines the type of object placed in the Board and notifies the Board
+ * object. It will also get and set an object's position on the board.
  *
+ * @author      Alben Cheung
+ * @author      MD Ashfaqul Islam
+ * @author      Shaun Guth
+ * @author      Jerry Phul
  */
 public class BoardObject {
 
@@ -13,12 +16,24 @@ public class BoardObject {
 	private BoardObjectType type;
 	protected Board board;
 	
+
+        /**
+         * Create an object and establish it's type.
+         *
+         * @param type      the type the object should be set to
+         */
 	public BoardObject(BoardObjectType type)
 	{
 		board = Board.INSTANCE;
 		setType(type);
 	}
 	
+
+        /**
+         * Return the position of the object.
+         *
+         * @return          the position
+         */
 	/**
 	 * @return the position
 	 */
@@ -27,34 +42,45 @@ public class BoardObject {
 		return position;
 	}
 	
-	/**
-	 * @param position the position to set
-	 */
+
+        /**
+         * Set the position of the board object.
+         *
+         * @param position  the position to set
+         */
 	public void setPosition(BoardPosition position) 
 	{
 		this.position = position;
 	}
 	
-	/**
-	 * @return the type
-	 */
+
+        /**
+         * Return the type of the board object.
+         *
+         * @return          the type
+         */
 	public BoardObjectType getType() 
 	{
 		return type;
 	}
 	
-	/**
-	 * @param type the type to set
-	 */
+
+        /**
+         * Set the type of the current board object.
+         *
+         * @param type  the type to set
+         */
 	public void setType(BoardObjectType type) 
 	{
 		this.type = type;
 	}
 	
-	/**
-	 * Renders this board object's type representation
-	 * @return the string representation of this object
-	 */
+
+        /**
+         * Renders this board object's type representation
+         *
+         * @return          the string representation of this object
+         */
 	public String toString()
 	{
 		return type.toString(); 
