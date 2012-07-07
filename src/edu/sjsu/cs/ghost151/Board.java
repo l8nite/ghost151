@@ -1,13 +1,20 @@
-/**
- * 
- */
 package edu.sjsu.cs.ghost151;
 
 import java.util.ArrayList;
 
 /**
- * @author shaung
+ * <b>Board</b>
+ * provides the Grid for the simulation. Additionally, it will:
+ * <ul>
+ * <li>set the walls on the perimeter of the Board
+ * <ii>place an object at a given position by calling BoardObject
+ * <li>get the surroundings of a given position by calling BoardObject
+ * </ul>
  *
+ * @author      Alben Cheung
+ * @author      MD Ashfaqul Islam
+ * @author      Shaun Guth
+ * @author      Jerry Phul
  */
 public enum Board {
 	INSTANCE; // singleton
@@ -17,9 +24,10 @@ public enum Board {
 
 	private BoardObject grid[][];
 	
-	/**
-	 * Constructs the default Board
-	 */
+
+        /**
+         * Constructs the default Board object.
+         */
 	private Board()
 	{
 		grid = new BoardObject[ROWS][COLUMNS];
@@ -41,6 +49,10 @@ public enum Board {
 		}
 	}
 	
+
+        /**
+         * Convert to string.
+         */
 	public String toString()
 	{
 		StringBuilder sb = new StringBuilder();
@@ -60,21 +72,35 @@ public enum Board {
 	}
 	
 	
-	/**
-	 * @param boardPosition the position to set the object at
-	 * @param boardObject the object to place
-	 */
+        /**
+         * Takes any object and assigns it to a position on the Board.
+         *
+	 * @param boardPosition     the position to set the object at
+	 * @param boardObject       the object to place
+         */
 	public void SetObjectAt(BoardPosition boardPosition, BoardObject boardObject)
 	{
 		boardObject.setPosition(boardPosition);
 		grid[boardPosition.getRow()][boardPosition.getColumn()] = boardObject;
 	}
 	
+
+        /**
+         * get the object at a given Board position.
+         *
+         * @param boardPosition       the board position to get object from
+         */
 	public BoardObject GetObjectAt(BoardPosition boardPosition)
 	{
 		return grid[boardPosition.getRow()][boardPosition.getColumn()];
 	}
 	
+
+        /**
+         * Retrieve the surrounding information for a given object on the Board.
+         *
+         * @param boardObject       The object to get surroundings of
+         */
 	public BoardObject[] GetSurroundings(BoardObject boardObject)
 	{
 		ArrayList<BoardObject> surroundings = new ArrayList<BoardObject>();
@@ -137,27 +163,45 @@ public enum Board {
 		return surroundingsArray;
 	}
 
-	/**
-	 * @return the grid
-	 */
+
+        /**
+         * Get the grid object.
+         *
+         * @return          the grid
+         */
 	public BoardObject[][] getGrid()
 	{
 		return grid;
 	}
 
-	/**
-	 * @param grid the grid to set
-	 */
+
+        /**
+         * Set the grid object.
+         *
+         * @param grid      the grid to set
+         */
 	public void setGrid(BoardObject[][] grid) 
 	{
 		this.grid = grid;
 	}
 
+
+        /**
+         * Get the row count of the Board object.
+         *
+         * @return          the row count.
+         */
 	public int getRowCount()
 	{
 		return ROWS;
 	}
 	
+
+        /**
+         * Return the column count for the Board object.
+         *
+         * @return          the column count.
+         */
 	public int getColumnCount() 
 	{
 		return COLUMNS;

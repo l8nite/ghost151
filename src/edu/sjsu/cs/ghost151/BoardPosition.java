@@ -1,31 +1,50 @@
-/**
- * 
- */
 package edu.sjsu.cs.ghost151;
 
 /**
- * @author shaung
+ * <b>BoardPosition</b>
+ * keeps track and informs of row and column information per object
+ * placed on the Board.
  *
+ * @author      Alben Cheung
+ * @author      MD Ashfaqul Islam
+ * @author      Shaun Guth
+ * @author      Jerry Phul
  */
 public class BoardPosition 
 {
 	private int row;
 	private int column;
 	
+
+        /**
+         * Holds the board position of the object.
+         *
+         * @param row       the row position
+         * @param column    the column position
+         */
 	public BoardPosition(int row, int column)
 	{
 		this.row = row;
 		this.column = column;
 	}
 	
-	/**
-	 * @return the row
-	 */
+
+        /**
+         * Retrieve the row position of the object.
+         *
+         * @return          the row
+         */
 	public int getRow() 
 	{
 		return row;
 	}
 	
+
+        /**
+         * Set the row position of the object.
+         *
+         * @param row       the position to set
+         */
 	/**
 	 * @param row the row to set
 	 */
@@ -34,22 +53,26 @@ public class BoardPosition
 		this.row = row;
 	}
 	
-	/**
-	 * @return the column
-	 */
+
+        /**
+         * Retrieve the column position of the object.
+         *
+         * @return          the column position
+         */
 	public int getColumn() 
 	{
 		return column;
 	}
 	
-	/**
-	 * @param column the column to set
-	 */
+
+        /**
+         * Set the column position of the object.
+         *
+         * @param column    the position to set
+         */
 	public void setColumn(int column) 
 	{
 		this.column = column;
 	}
-	
-	
 
 }
