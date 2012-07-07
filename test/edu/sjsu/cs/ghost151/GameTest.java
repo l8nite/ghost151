@@ -25,7 +25,9 @@ public class GameTest {
 	 */
 	@Test
 	public void testGetNumberOfCommunications() {
-		fail("Not yet implemented");
+		Game test1 = Game.INSTANCE;
+		test1.setNumberOfCommunications(40);
+		assertNotNull(test1.getNumberOfCommunications());
 	}
 
 	/**
@@ -33,7 +35,9 @@ public class GameTest {
 	 */
 	@Test
 	public void testSetNumberOfCommunications() {
-		fail("Not yet implemented");
+		Game test2 = Game.INSTANCE;
+		test2.setNumberOfCommunications(40);
+		assertEquals(40, test2.getNumberOfCommunications());
 	}
 
 	/**
