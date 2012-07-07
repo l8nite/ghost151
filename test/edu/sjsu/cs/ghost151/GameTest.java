@@ -4,7 +4,6 @@
 package edu.sjsu.cs.ghost151;
 
 import static org.junit.Assert.*;
-
 import org.junit.Test;
 
 /**
@@ -74,7 +73,13 @@ public class GameTest {
 	 */
 	@Test
 	public void testGetGhosts() {
-		fail("Not yet implemented");
+		Game test7 = Game.INSTANCE;
+		Ghost ghostsTest[];
+		int numOfGhosts = 4;
+		
+		ghostsTest = new Ghost[numOfGhosts];
+		test7.setGhosts(ghostsTest);
+		assertNotNull(test7.getGhosts());
 	}
 
 	/**
@@ -82,7 +87,13 @@ public class GameTest {
 	 */
 	@Test
 	public void testSetGhosts() {
-		fail("Not yet implemented");
+		Game test8 = Game.INSTANCE;
+		Ghost ghostsTest[];
+		int numOfGhosts = 4;
+		
+		ghostsTest = new Ghost[numOfGhosts];
+		test8.setGhosts(ghostsTest);
+		assertArrayEquals(test8.getGhosts(), ghostsTest);
 	}
 
 	/**
@@ -90,7 +101,11 @@ public class GameTest {
 	 */
 	@Test
 	public void testGetBoard() {
-		fail("Not yet implemented");
+		Board boardTest = Board.INSTANCE;
+		Game test9 = Game.INSTANCE;	
+		
+		test9.setBoard(boardTest);
+		assertNotNull(test9.getBoard());
 	}
 
 	/**
@@ -98,7 +113,12 @@ public class GameTest {
 	 */
 	@Test
 	public void testSetBoard() {
-		fail("Not yet implemented");
+		Board boardTest = Board.INSTANCE;
+		Game test10 = Game.INSTANCE;	
+		
+		test10.setBoard(boardTest);
+		Board settedBoard = test10.getBoard();
+		assertEquals(settedBoard,boardTest);
 	}
 
 }
