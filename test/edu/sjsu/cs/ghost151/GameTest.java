@@ -41,7 +41,10 @@ public class GameTest {
 	 */
 	@Test
 	public void testGetNumberOfGhosts() {
-		fail("Not yet implemented");
+		Game test3 = Game.INSTANCE;
+		int numOfGhosts = 6;
+		test3.setNumberOfGhosts(numOfGhosts);
+		assertNotNull(test3.getNumberOfGhosts());
 	}
 
 	/**
@@ -49,7 +52,10 @@ public class GameTest {
 	 */
 	@Test
 	public void testSetNumberOfGhosts() {
-		fail("Not yet implemented");
+		Game test4 = Game.INSTANCE;
+		int numOfGhosts = 6;
+		test4.setNumberOfGhosts(numOfGhosts);
+		assertEquals(numOfGhosts, test4.getNumberOfGhosts());
 	}
 
 	/**
@@ -57,7 +63,9 @@ public class GameTest {
 	 */
 	@Test
 	public void testGetNumberOfMovements() {
-		fail("Not yet implemented");
+		Game test5 = Game.INSTANCE;
+		test5.setNumberOfMovements(20);
+		assertNotNull(test5.getNumberOfMovements());
 	}
 
 	/**
@@ -65,7 +73,9 @@ public class GameTest {
 	 */
 	@Test
 	public void testSetNumberOfMovements() {
-		fail("Not yet implemented");
+		Game test6 = Game.INSTANCE;
+		test6.setNumberOfMovements(20);
+		assertEquals(20, test6.getNumberOfMovements());
 	}
 
 	/**
