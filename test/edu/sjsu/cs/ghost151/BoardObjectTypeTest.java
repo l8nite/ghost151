@@ -18,7 +18,10 @@ public class BoardObjectTypeTest {
 	 */
 	@Test
 	public void testGetRepresentation() {
-		fail("Not yet implemented");
+		assertEquals("@",BoardObjectType.Target.toString());
+		assertEquals(" ",BoardObjectType.Empty.toString());
+		assertEquals("&",BoardObjectType.Ghost.toString());
+		assertEquals("+",BoardObjectType.Wall.toString());
 	}
 
 }
