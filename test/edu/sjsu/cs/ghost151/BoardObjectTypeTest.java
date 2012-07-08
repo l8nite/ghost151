@@ -17,10 +17,10 @@ public class BoardObjectTypeTest {
 
 	/**
 	 * Test method for
-	 * {@link edu.sjsu.cs.ghost151.BoardObjectType#getRepresentation()}.
+	 * {@link edu.sjsu.cs.ghost151.BoardObjectType#toString()}.
 	 */
 	@Test
-	public void testGetRepresentation() {
+	public void testToString() {
 		assertEquals("@", BoardObjectType.Target.toString());
 		assertEquals(" ", BoardObjectType.Empty.toString());
 		assertEquals("&", BoardObjectType.Ghost.toString());
