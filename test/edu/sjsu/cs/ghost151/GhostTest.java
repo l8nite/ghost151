@@ -20,7 +20,10 @@ public class GhostTest {
 	 */
 	@Test
 	public void testGetExploredPositions() {
-		fail("Not yet implemented");
+		BoardObjectType[][] explored = new BoardObjectType[20][10];
+		Ghost testGhost = new Ghost();
+		testGhost.setExploredPositions(explored);
+		assertNotNull(testGhost.getExploredPositions());
 	}
 
 	/**
@@ -28,7 +31,10 @@ public class GhostTest {
 	 */
 	@Test
 	public void testSetExploredPositions() {
-		fail("Not yet implemented");
+		BoardObjectType[][] explored = new BoardObjectType[20][10];
+		Ghost testGhost = new Ghost();
+		testGhost.setExploredPositions(explored);
+		assertArrayEquals(explored, testGhost.getExploredPositions());
 	}
 
 }
