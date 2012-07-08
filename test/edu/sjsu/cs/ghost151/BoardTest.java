@@ -55,11 +55,16 @@ public class BoardTest {
 	@Test
 	public void testToString() {
 		board.Initialize();
-		String expected = "++++++++++++++++++++" + "+                  +"
-				+ "+                  +" + "+                  +"
-				+ "+                  +" + "+                  +"
-				+ "+                  +" + "+                  +"
-				+ "+                  +" + "++++++++++++++++++++";
+		String expected = "++++++++++++++++++++\n" 
+						+ "+                  +\n"
+						+ "+                  +\n" 
+						+ "+                  +\n"
+						+ "+                  +\n" 
+						+ "+                  +\n"
+						+ "+                  +\n" 
+						+ "+                  +\n"
+						+ "+                  +\n" 
+						+ "++++++++++++++++++++\n";
 		assertEquals(expected, board.toString());
 	}
 
@@ -126,17 +131,9 @@ public class BoardTest {
 			assertEquals(BoardObjectType.Wall, surroundings[i].getType());
 		}
 		
-		assertEquals(BoardObjectType.Ghost, surroundings[4]);
-		assertEquals(BoardObjectType.Wall, surroundings[5]);
-		assertEquals(BoardObjectType.Ghost, surroundings[6]);
-		assertEquals(BoardObjectType.Ghost, surroundings[7]);
+		assertEquals(BoardObjectType.Ghost, surroundings[4].getType());
+		assertEquals(BoardObjectType.Wall, surroundings[5].getType());
+		assertEquals(BoardObjectType.Ghost, surroundings[6].getType());
+		assertEquals(BoardObjectType.Ghost, surroundings[7].getType());
 	}
-
-	/**
-	 * Test method for {@link edu.sjsu.cs.ghost151.Board#getGrid()}.
-	 */
-	// This test is covered by testInitialize
-	//@Test
-	//public void testGetGrid() {
-	//}
 }

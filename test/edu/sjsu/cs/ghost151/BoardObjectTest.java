@@ -16,69 +16,48 @@ import org.junit.Test;
 public class BoardObjectTest {
 
 	/**
-	 * Test method for {@link edu.sjsu.cs.ghost151.BoardObject#getPosition()}.
-	 */
-	@Test
-	public void testGetPosition() {
-		BoardObjectType typeTest = BoardObjectType.Ghost;
-		BoardObject positionTest = new BoardObject(typeTest);
-		BoardPosition position = new BoardPosition(10, 2);
-		positionTest.setPosition(position);
-		assertNotNull(positionTest.getPosition());
-	}
-
-	/**
-	 * Test method for
+	 * Test method for {@link edu.sjsu.cs.ghost151.BoardObject#getPosition()}
+	 * and
 	 * {@link edu.sjsu.cs.ghost151.BoardObject#setPosition(edu.sjsu.cs.ghost151.BoardPosition)}
-	 * .
 	 */
 	@Test
-	public void testSetPosition() {
-		BoardObjectType typeTest = BoardObjectType.Ghost;
-		BoardObject positionTest = new BoardObject(typeTest);
+	public void testGetSetPosition() {
+		BoardObject object = new BoardObject(BoardObjectType.Ghost);
+		assertNull(object.getPosition());
+
 		BoardPosition position = new BoardPosition(10, 2);
-		positionTest.setPosition(position);
-		assertEquals(position, positionTest.getPosition());
+		object.setPosition(position);
+		assertEquals(position, object.getPosition());
+
 	}
 
 	/**
-	 * Test method for {@link edu.sjsu.cs.ghost151.BoardObject#getType()}.
-	 */
-	@Test
-	public void testGetType() {
-		BoardObjectType typeTest = BoardObjectType.Ghost;
-		BoardObject objectTest = new BoardObject(typeTest);
-		assertNotNull(objectTest.getType());
-	}
-
-	/**
-	 * Test method for
+	 * Test method for {@link edu.sjsu.cs.ghost151.BoardObject#getType()} and
 	 * {@link edu.sjsu.cs.ghost151.BoardObject#setType(edu.sjsu.cs.ghost151.BoardObjectType)}
-	 * .
 	 */
 	@Test
-	public void testSetType() {
-		BoardObjectType typeTest = BoardObjectType.Ghost;
-		BoardObject objectTest = new BoardObject(typeTest);
-		assertEquals(typeTest, objectTest.getType());
+	public void testGetSetType() {
+		BoardObject object = new BoardObject(BoardObjectType.Ghost);
+
+		assertEquals(BoardObjectType.Ghost, object.getType());
+		// *poof* you're a wall.
+		object.setType(BoardObjectType.Wall);
+		assertEquals(BoardObjectType.Wall, object.getType());
 	}
 
 	/**
-	 * Test method for {@link edu.sjsu.cs.ghost151.BoardObject#getBoard()}.
+	 * Test method for {@link edu.sjsu.cs.ghost151.BoardObject#toString()}.
+	 * Tests that rendering a BoardObject is the same as rendering its
+	 * corresponding BoardObjectType
 	 */
 	@Test
-	public void testGetBoard() {
-		fail("Not yet implemented");
-	}
+	public void testToString() {
+		BoardObjectType ghostType = BoardObjectType.Ghost;
+		BoardObject object = new BoardObject(ghostType);
 
-	/**
-	 * Test method for
-	 * {@link edu.sjsu.cs.ghost151.BoardObject#setBoard(edu.sjsu.cs.ghost151.Board)}
-	 * .
-	 */
-	@Test
-	public void testSetBoard() {
-		fail("Not yet implemented");
+		String expected = ghostType.toString();
+		String actual = object.toString();
+		assertEquals(expected, actual);
 	}
 
 }
