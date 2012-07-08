@@ -18,7 +18,10 @@ public class BoardTest {
 	 */
 	@Test
 	public void testGetGrid() {
-		fail("Not yet implemented");
+		Board newBoard = Board.INSTANCE;
+		BoardObject grid[][] = new BoardObject[10][10];
+		newBoard.setGrid(grid);
+		assertNotNull(newBoard.getGrid());
 	}
 
 	/**
@@ -26,7 +29,10 @@ public class BoardTest {
 	 */
 	@Test
 	public void testSetGrid() {
-		fail("Not yet implemented");
+		Board newBoard = Board.INSTANCE;
+		BoardObject grid[][] = new BoardObject[5][10];
+		newBoard.setGrid(grid);
+		assertArrayEquals(grid,newBoard.getGrid());
 	}
 
 }

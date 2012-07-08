@@ -18,7 +18,8 @@ public class BoardPositionTest {
 	 */
 	@Test
 	public void testGetRow() {
-		fail("Not yet implemented");
+		BoardPosition test = new BoardPosition(10, 5);
+		assertEquals(10, test.getRow());
 	}
 
 	/**
@@ -26,7 +27,9 @@ public class BoardPositionTest {
 	 */
 	@Test
 	public void testSetRow() {
-		fail("Not yet implemented");
+		BoardPosition test = new BoardPosition(1, 5);
+		test.setRow(20);
+		assertEquals(20, test.getRow());
 	}
 
 	/**
@@ -34,7 +37,8 @@ public class BoardPositionTest {
 	 */
 	@Test
 	public void testGetColumn() {
-		fail("Not yet implemented");
+		BoardPosition test = new BoardPosition(10, 15);
+		assertEquals(15, test.getColumn());
 	}
 
 	/**
@@ -42,7 +46,9 @@ public class BoardPositionTest {
 	 */
 	@Test
 	public void testSetColumn() {
-		fail("Not yet implemented");
+		BoardPosition test = new BoardPosition(10, 15);
+		test.setColumn(4);
+		assertEquals(4, test.getColumn());
 	}
 
 }
