@@ -18,8 +18,8 @@ import java.util.ArrayList;
 public enum Board {
 	INSTANCE; // singleton
 
-	private static final int ROWS = 10;
-	private static final int COLUMNS = 20;
+	public static final int ROWS = 10;
+	public static final int COLUMNS = 20;
 
 	private BoardObject grid[][];
 
@@ -27,6 +27,13 @@ public enum Board {
 	 * Constructs the default Board object.
 	 */
 	private Board() {
+		Initialize();
+	}
+	
+	/**
+	 * Initializes the board, sets the walls to the outer edges and the rest empty
+	 */
+	public void Initialize() {
 		grid = new BoardObject[ROWS][COLUMNS];
 
 		for (int row = 0; row < ROWS; ++row) {
@@ -153,33 +160,4 @@ public enum Board {
 	public BoardObject[][] getGrid() {
 		return grid;
 	}
-
-	/**
-	 * Set the grid object.
-	 * 
-	 * @param grid
-	 *            the grid to set
-	 */
-	public void setGrid(BoardObject[][] grid) {
-		this.grid = grid;
-	}
-
-	/**
-	 * Get the row count of the Board object.
-	 * 
-	 * @return the row count.
-	 */
-	public int getRowCount() {
-		return ROWS;
-	}
-
-	/**
-	 * Return the column count for the Board object.
-	 * 
-	 * @return the column count.
-	 */
-	public int getColumnCount() {
-		return COLUMNS;
-	}
-
 }

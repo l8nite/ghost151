@@ -98,8 +98,8 @@ public enum Game {
 			while (board.GetObjectAt(position).getType() != BoardObjectType.Empty) {
 				// pick a random position on the board for this ghost, avoid the
 				// walls
-				position.setRow(generator.nextInt(board.getRowCount() - 2) + 1);
-				position.setColumn(generator.nextInt(board.getColumnCount() - 2) + 1);
+				position.setRow(generator.nextInt(Board.ROWS - 2) + 1);
+				position.setColumn(generator.nextInt(Board.COLUMNS - 2) + 1);
 			}
 
 			board.SetObjectAt(position, ghosts[i]);
@@ -116,10 +116,9 @@ public enum Game {
 		BoardPosition position = new BoardPosition(0, 0);
 
 		while (board.GetObjectAt(position).getType() != BoardObjectType.Empty) {
-			// pick a random position on the board for this ghost, avoid the
-			// walls
-			position.setRow(generator.nextInt(board.getRowCount() - 2) + 1);
-			position.setColumn(generator.nextInt(board.getColumnCount() - 2) + 1);
+			// pick a random position on the board, avoid the walls
+			position.setRow(generator.nextInt(Board.ROWS - 2) + 1);
+			position.setColumn(generator.nextInt(Board.COLUMNS - 2) + 1);
 		}
 
 		BoardObject target = new BoardObject(BoardObjectType.Target);

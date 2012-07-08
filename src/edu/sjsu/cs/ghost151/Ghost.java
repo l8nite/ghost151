@@ -22,8 +22,7 @@ public class Ghost extends BoardObject {
 	 */
 	public Ghost() {
 		super(BoardObjectType.Ghost);
-		exploredPositions = new BoardObjectType[board.getRowCount()][board
-				.getColumnCount()];
+		exploredPositions = new BoardObjectType[Board.ROWS][Board.COLUMNS];
 	}
 
 	/**
