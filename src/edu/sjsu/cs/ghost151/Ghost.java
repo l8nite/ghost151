@@ -16,13 +16,20 @@ import java.util.Random;
 public class Ghost extends BoardObject {
 	private BoardObjectType exploredPositions[][];
 	private boolean targetAcquired = false;
-
+	private BoardPosition movePosition = null;
+	private Random generator;
+	
 	/**
 	 * Construct a Ghost object that is aware of positions its explored.
 	 */
 	public Ghost() {
 		super(BoardObjectType.Ghost);
 		exploredPositions = new BoardObjectType[Board.ROWS][Board.COLUMNS];
+	}
+	
+	public Ghost(Random generator) {
+		this();
+		this.generator = generator;
 	}
 
 	/**
@@ -76,7 +83,7 @@ public class Ghost extends BoardObject {
 	 * move to it else look for a Ghost to communicate with it. Finally, move to
 	 * a new location and update Ghost object's position.
 	 */
-	public void Update() {
+	public void Scan() {
 		BoardObject[] surroundings = board.GetSurroundings(this);
 
 		for (int i = 0; i < surroundings.length; ++i) {
@@ -90,7 +97,7 @@ public class Ghost extends BoardObject {
 			if (object.getType() == BoardObjectType.Target) {
 				// move to the target space and acquire it
 				targetAcquired = true;
-				MoveTo(position);
+				movePosition = position;
 			}
 
 			if (object.getType() == BoardObjectType.Ghost) {
@@ -105,10 +112,13 @@ public class Ghost extends BoardObject {
 		// location to move to
 		// TODO: move more intelligently.
 		if (!targetAcquired) {
-			Random generator = new Random();
 			int randomSurrounding = generator.nextInt(surroundings.length);
-			MoveTo(surroundings[randomSurrounding].getPosition());
+			movePosition = surroundings[randomSurrounding].getPosition();
 		}
+	}
+
+	public void Move() {
+		MoveTo(movePosition);
 	}
 
 	/**
@@ -118,6 +128,10 @@ public class Ghost extends BoardObject {
 	 *            the object's new position
 	 */
 	private void MoveTo(BoardPosition newPosition) {
+		if (null == newPosition) {
+			return;
+		}
+
 		// we can't move into anything but empty space
 		if (board.GetObjectAt(newPosition).getType() != BoardObjectType.Empty) {
 			return;

@@ -20,8 +20,8 @@ public class BoardPositionTest {
 	 */
 	@Test
 	public void testGetRow() {
-		BoardPosition test = new BoardPosition(10, 5);
-		assertEquals(10, test.getRow());
+		BoardPosition position = new BoardPosition(10, 5);
+		assertEquals(10, position.getRow());
 	}
 
 	/**
@@ -29,9 +29,9 @@ public class BoardPositionTest {
 	 */
 	@Test
 	public void testSetRow() {
-		BoardPosition test = new BoardPosition(1, 5);
-		test.setRow(20);
-		assertEquals(20, test.getRow());
+		BoardPosition position = new BoardPosition(1, 5);
+		position.setRow(20);
+		assertEquals(20, position.getRow());
 	}
 
 	/**
@@ -39,8 +39,8 @@ public class BoardPositionTest {
 	 */
 	@Test
 	public void testGetColumn() {
-		BoardPosition test = new BoardPosition(10, 15);
-		assertEquals(15, test.getColumn());
+		BoardPosition position = new BoardPosition(10, 15);
+		assertEquals(15, position.getColumn());
 	}
 
 	/**
@@ -49,9 +49,9 @@ public class BoardPositionTest {
 	 */
 	@Test
 	public void testSetColumn() {
-		BoardPosition test = new BoardPosition(10, 15);
-		test.setColumn(4);
-		assertEquals(4, test.getColumn());
+		BoardPosition position = new BoardPosition(10, 15);
+		position.setColumn(4);
+		assertEquals(4, position.getColumn());
 	}
 
 }

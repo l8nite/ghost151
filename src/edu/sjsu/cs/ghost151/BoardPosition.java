@@ -39,10 +39,6 @@ public class BoardPosition {
 	 * Set the row position of the object.
 	 * 
 	 * @param row
-	 *            the position to set
-	 */
-	/**
-	 * @param row
 	 *            the row to set
 	 */
 	public void setRow(int row) {
@@ -62,7 +58,7 @@ public class BoardPosition {
 	 * Set the column position of the object.
 	 * 
 	 * @param column
-	 *            the position to set
+	 *            the column to set
 	 */
 	public void setColumn(int column) {
 		this.column = column;

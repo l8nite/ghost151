@@ -26,71 +26,37 @@ public enum Game {
 	private int numberOfGhosts;
 	private int numberOfGameLoops;
 	private int numberOfMovements;
+
 	private Ghost ghosts[];
 	private Board board;
 	private boolean isRunning;
 
 	/**
-	 * <b>Run</b> takes the number of Ghost objects to create and configures the
-	 * board for simulation. At conclusion of simulation, the print statistics
-	 * method will be called to display the results.
-	 * 
-	 * @param numberOfGhosts
-	 *            number of Ghost objects to start the game with.
-	 */
-	public void Run(int numberOfGhosts) {
-		this.numberOfGhosts = numberOfGhosts;
-
-		ConfigureBoard();
-
-		isRunning = true;
-
-		while (isRunning) {
-			Update();
-			Render();
-			++numberOfGameLoops;
-
-			// slow down the game loop so that rendering is human-speed
-			try {
-				Thread.sleep(500);
-			} catch (InterruptedException interruptedException) {
-			}
-		}
-
-		PrintStatistics();
-	}
-
-	/**
-	 * <b>PrintStatistics</b> responsible for printing the statistics.
-	 */
-	public void PrintStatistics() {
-		System.out.println("Number of game loops: " + numberOfGameLoops);
-		System.out.println("Number of movements: " + numberOfMovements);
-		System.out.println("Number of communications: "
-				+ numberOfCommunications);
-	}
-
-	/**
 	 * <b>ConfigureBoard</b> will configure the number of defined or user
 	 * entered ghosts and place them on the Board object.
 	 */
-	public void ConfigureBoard() {
+	public void ConfigureBoard(int numberOfGhosts, Random generator) {
 		board = Board.INSTANCE;
-		ConfigureGhosts();
-		ConfigureTarget();
+		board.Initialize();
+
+		this.numberOfGhosts = numberOfGhosts;
+		numberOfCommunications = 0;
+		numberOfMovements = 0;
+		numberOfGameLoops = 0;
+
+		ConfigureGhosts(generator);
+		ConfigureTarget(generator);
 	}
 
 	/**
 	 * <b>ConfigureGhosts</b> will create the Ghost objects and place them at
 	 * random positions on the Board object.
 	 */
-	private void ConfigureGhosts() {
-		Random generator = new Random();
-
+	private void ConfigureGhosts(Random generator) {
 		ghosts = new Ghost[numberOfGhosts];
 
 		for (int i = 0; i < numberOfGhosts; ++i) {
-			ghosts[i] = new Ghost();
+			ghosts[i] = new Ghost(generator);
 
 			// we always know that position 0,0 won't be empty (it's a wall)
 			BoardPosition position = new BoardPosition(0, 0);
@@ -107,11 +73,9 @@ public enum Game {
 	}
 
 	/**
-	 * <b>ConfigureTarget</b> move the Ghost object to a new random location.
+	 * <b>ConfigureTarget</b> move the Pacman object to a new random location.
 	 */
-	private void ConfigureTarget() {
-		Random generator = new Random();
-
+	private void ConfigureTarget(Random generator) {
 		// we always know that position 0,0 won't be empty (it's a wall)
 		BoardPosition position = new BoardPosition(0, 0);
 
@@ -127,6 +91,35 @@ public enum Game {
 	}
 
 	/**
+	 * <b>Run</b> takes the number of Ghost objects to create and configures the
+	 * board for simulation. At conclusion of simulation, the print statistics
+	 * method will be called to display the results.
+	 * 
+	 * @param numberOfGhosts
+	 *            number of Ghost objects to start the game with.
+	 */
+	public void Run(int numberOfGhosts) {
+		Random generator = new Random();
+		ConfigureBoard(numberOfGhosts, generator);
+
+		isRunning = true;
+
+		while (isRunning) {
+			Update();
+			Render();
+			++numberOfGameLoops;
+
+			// slow down the game loop so that rendering is human-speed
+			try {
+				Thread.sleep(500);
+			} catch (InterruptedException interruptedException) {
+			}
+		}
+
+		System.out.println(GetStatistics());
+	}
+
+	/**
 	 * <b>Update</b> will request from each Ghost object if the target (PacMan)
 	 * has been acquired. If so, set <i>isRunning</i> to false so the Game loop
 	 * may end.
@@ -134,7 +127,12 @@ public enum Game {
 	public void Update() {
 		for (int i = 0; i < numberOfGhosts; ++i) {
 			Ghost ghost = ghosts[i];
-			ghost.Update();
+			ghost.Scan();
+		}
+
+		for (int i = 0; i < numberOfGhosts; ++i) {
+			Ghost ghost = ghosts[i];
+			ghost.Move();
 
 			if (ghost.IsTargetAcquired()) {
 				isRunning = false;
@@ -149,6 +147,18 @@ public enum Game {
 	 */
 	public void Render() {
 		System.out.print(board.toString());
+	}
+
+	/**
+	 * <b>GetStatistics</b> returns a string representing the final game
+	 * statistics.
+	 * 
+	 * @return the string to print for statistics
+	 */
+	public String GetStatistics() {
+		return "Number of game loops: " + numberOfGameLoops + "\n"
+				+ "Number of movements: " + numberOfMovements + "\n"
+				+ "Number of communications: " + numberOfCommunications + "\n";
 	}
 
 	/**
@@ -168,43 +178,13 @@ public enum Game {
 	}
 
 	/**
-	 * <b>getNumberOfCommunications</b> gets the number of communications.
+	 * <b>getNumberOfCommunications</b> the number of communications completed
+	 * by all Ghost objects.
 	 * 
-	 * @return the numberOfCommunications
+	 * @return total number of communications.
 	 */
 	public int getNumberOfCommunications() {
 		return numberOfCommunications;
-	}
-
-	/**
-	 * <b>setNumberOfCommunications</b> allows the number of communications to
-	 * be set.
-	 * 
-	 * @param numberOfCommunications
-	 *            the numberOfCommunications to set
-	 */
-	public void setNumberOfCommunications(int numberOfCommunications) {
-		this.numberOfCommunications = numberOfCommunications;
-	}
-
-	/**
-	 * <b>getNumberOfGhosts</b> return the number of Ghost requested by user
-	 * input.
-	 * 
-	 * @return the numberOfGhosts
-	 */
-	public int getNumberOfGhosts() {
-		return numberOfGhosts;
-	}
-
-	/**
-	 * <b>setNumberOfGhosts</b> allows the number of Ghost objects to be set.
-	 * 
-	 * @param numberOfGhosts
-	 *            the numberOfGhosts to set
-	 */
-	public void setNumberOfGhosts(int numberOfGhosts) {
-		this.numberOfGhosts = numberOfGhosts;
 	}
 
 	/**
@@ -218,14 +198,12 @@ public enum Game {
 	}
 
 	/**
-	 * <b>setNumberOfMovements</b> set the number of movements completed by all
-	 * Ghost objects.
+	 * <b>getNumberOfGameLoops</b> the number of game loops completed
 	 * 
-	 * @param numberOfMovements
-	 *            the numberOfMovements to set
+	 * @return total number of game loops
 	 */
-	public void setNumberOfMovements(int numberOfMovements) {
-		this.numberOfMovements = numberOfMovements;
+	public int getNumberOfGameLoops() {
+		return numberOfGameLoops;
 	}
 
 	/**
@@ -235,34 +213,5 @@ public enum Game {
 	 */
 	public Ghost[] getGhosts() {
 		return ghosts;
-	}
-
-	/**
-	 * <b>setGhosts</b> set the Ghost object.
-	 * 
-	 * @param ghosts
-	 *            the Ghost object to set
-	 */
-	public void setGhosts(Ghost[] ghosts) {
-		this.ghosts = ghosts;
-	}
-
-	/**
-	 * <b>getBoard</b> get the Board object.
-	 * 
-	 * @return the board
-	 */
-	public Board getBoard() {
-		return board;
-	}
-
-	/**
-	 * <b>setBoard</b> set the Board object.
-	 * 
-	 * @param board
-	 *            the Board object to set
-	 */
-	public void setBoard(Board board) {
-		this.board = board;
 	}
 }
