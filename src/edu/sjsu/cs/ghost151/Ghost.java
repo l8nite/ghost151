@@ -23,12 +23,12 @@ public class Ghost extends BoardObject {
 	 * Construct a Ghost object that is aware of positions its explored.
 	 */
 	public Ghost() {
-		super(BoardObjectType.Ghost);
-		exploredPositions = new BoardObjectType[Board.ROWS][Board.COLUMNS];
+		this(new Random());
 	}
 	
 	public Ghost(Random generator) {
-		this();
+		super(BoardObjectType.Ghost);
+		exploredPositions = new BoardObjectType[Board.ROWS][Board.COLUMNS];
 		this.generator = generator;
 	}
 
