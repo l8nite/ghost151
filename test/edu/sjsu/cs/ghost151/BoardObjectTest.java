@@ -8,8 +8,10 @@ import static org.junit.Assert.*;
 import org.junit.Test;
 
 /**
- * @author shaung
- *
+ * @author      Alben Cheung
+ * @author      MD Ashfaqul Islam
+ * @author      Shaun Guth
+ * @author      Jerry Phul
  */
 public class BoardObjectTest {
 
@@ -18,7 +20,11 @@ public class BoardObjectTest {
 	 */
 	@Test
 	public void testGetPosition() {
-		fail("Not yet implemented");
+		BoardObjectType typeTest = BoardObjectType.Ghost;
+		BoardObject positionTest = new BoardObject(typeTest);
+		BoardPosition position = new BoardPosition(10,2);
+		positionTest.setPosition(position);
+		assertNotNull(positionTest.getPosition());
 	}
 
 	/**
@@ -26,7 +32,11 @@ public class BoardObjectTest {
 	 */
 	@Test
 	public void testSetPosition() {
-		fail("Not yet implemented");
+		BoardObjectType typeTest = BoardObjectType.Ghost;
+		BoardObject positionTest = new BoardObject(typeTest);
+		BoardPosition position = new BoardPosition(10,2);
+		positionTest.setPosition(position);
+		assertEquals(position,positionTest.getPosition());
 	}
 
 	/**
@@ -34,7 +44,9 @@ public class BoardObjectTest {
 	 */
 	@Test
 	public void testGetType() {
-		fail("Not yet implemented");
+		BoardObjectType typeTest = BoardObjectType.Ghost;
+		BoardObject objectTest = new BoardObject(typeTest);
+		assertNotNull(objectTest.getType());
 	}
 
 	/**
@@ -42,7 +54,9 @@ public class BoardObjectTest {
 	 */
 	@Test
 	public void testSetType() {
-		fail("Not yet implemented");
+		BoardObjectType typeTest = BoardObjectType.Ghost;
+		BoardObject objectTest = new BoardObject(typeTest);
+		assertEquals(typeTest,objectTest.getType());
 	}
 
 	/**

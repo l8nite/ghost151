@@ -7,8 +7,10 @@ import static org.junit.Assert.*;
 import org.junit.Test;
 
 /**
- * @author shaung
- *
+ * @author      Alben Cheung
+ * @author      MD Ashfaqul Islam
+ * @author      Shaun Guth
+ * @author      Jerry Phul
  */
 public class GameTest {
 
