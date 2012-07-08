@@ -39,10 +39,50 @@ public class GhostTest {
 		testGhost.setExploredPositions(explored);
 		assertArrayEquals(explored, testGhost.getExploredPositions());
 	}
-
+	
+	/**
+	 * Test method for
+	 * {@link edu.sjsu.cs.ghost151.Ghost#isTargetAcquired()}
+	 * .
+	 */
 	@Test
-	public void isTargetAcquiredTest(){
+	public void testIsTargetAcquired(){
 		Ghost targetTest = new Ghost();
 		assertFalse(targetTest.IsTargetAcquired());
 	}
+	
+	/**
+	 * Test method for
+	 * {@link edu.sjsu.cs.ghost151.Ghost#Move()}
+	 * .
+	 */
+	@Test
+	public void testMove(){
+		
+		
+	}
+	
+	/**
+	 * Test method for
+	 * {@link edu.sjsu.cs.ghost151.Ghost#Scan()}
+	 * .
+	 */
+	@Test
+	public void testScan(){
+		
+		
+	}
+	
+	/**
+	 * Test method for
+	 * {@link edu.sjsu.cs.ghost151.Ghost#CommunicateWith(edu.sjsu.cs.ghost151.Ghost)}
+	 * .
+	 */
+	@Test
+	public void testCommunicateWith(){
+		
+		
+	}
+	
+	
 }
