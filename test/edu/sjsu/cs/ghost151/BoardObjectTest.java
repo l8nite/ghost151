@@ -8,10 +8,10 @@ import static org.junit.Assert.*;
 import org.junit.Test;
 
 /**
- * @author      Alben Cheung
- * @author      MD Ashfaqul Islam
- * @author      Shaun Guth
- * @author      Jerry Phul
+ * @author Alben Cheung
+ * @author MD Ashfaqul Islam
+ * @author Shaun Guth
+ * @author Jerry Phul
  */
 public class BoardObjectTest {
 
@@ -22,21 +22,23 @@ public class BoardObjectTest {
 	public void testGetPosition() {
 		BoardObjectType typeTest = BoardObjectType.Ghost;
 		BoardObject positionTest = new BoardObject(typeTest);
-		BoardPosition position = new BoardPosition(10,2);
+		BoardPosition position = new BoardPosition(10, 2);
 		positionTest.setPosition(position);
 		assertNotNull(positionTest.getPosition());
 	}
 
 	/**
-	 * Test method for {@link edu.sjsu.cs.ghost151.BoardObject#setPosition(edu.sjsu.cs.ghost151.BoardPosition)}.
+	 * Test method for
+	 * {@link edu.sjsu.cs.ghost151.BoardObject#setPosition(edu.sjsu.cs.ghost151.BoardPosition)}
+	 * .
 	 */
 	@Test
 	public void testSetPosition() {
 		BoardObjectType typeTest = BoardObjectType.Ghost;
 		BoardObject positionTest = new BoardObject(typeTest);
-		BoardPosition position = new BoardPosition(10,2);
+		BoardPosition position = new BoardPosition(10, 2);
 		positionTest.setPosition(position);
-		assertEquals(position,positionTest.getPosition());
+		assertEquals(position, positionTest.getPosition());
 	}
 
 	/**
@@ -50,13 +52,15 @@ public class BoardObjectTest {
 	}
 
 	/**
-	 * Test method for {@link edu.sjsu.cs.ghost151.BoardObject#setType(edu.sjsu.cs.ghost151.BoardObjectType)}.
+	 * Test method for
+	 * {@link edu.sjsu.cs.ghost151.BoardObject#setType(edu.sjsu.cs.ghost151.BoardObjectType)}
+	 * .
 	 */
 	@Test
 	public void testSetType() {
 		BoardObjectType typeTest = BoardObjectType.Ghost;
 		BoardObject objectTest = new BoardObject(typeTest);
-		assertEquals(typeTest,objectTest.getType());
+		assertEquals(typeTest, objectTest.getType());
 	}
 
 	/**
@@ -68,7 +72,9 @@ public class BoardObjectTest {
 	}
 
 	/**
-	 * Test method for {@link edu.sjsu.cs.ghost151.BoardObject#setBoard(edu.sjsu.cs.ghost151.Board)}.
+	 * Test method for
+	 * {@link edu.sjsu.cs.ghost151.BoardObject#setBoard(edu.sjsu.cs.ghost151.Board)}
+	 * .
 	 */
 	@Test
 	public void testSetBoard() {

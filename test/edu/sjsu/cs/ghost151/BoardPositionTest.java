@@ -8,10 +8,10 @@ import static org.junit.Assert.*;
 import org.junit.Test;
 
 /**
- * @author      Alben Cheung
- * @author      MD Ashfaqul Islam
- * @author      Shaun Guth
- * @author      Jerry Phul
+ * @author Alben Cheung
+ * @author MD Ashfaqul Islam
+ * @author Shaun Guth
+ * @author Jerry Phul
  */
 public class BoardPositionTest {
 
@@ -44,7 +44,8 @@ public class BoardPositionTest {
 	}
 
 	/**
-	 * Test method for {@link edu.sjsu.cs.ghost151.BoardPosition#setColumn(int)}.
+	 * Test method for {@link edu.sjsu.cs.ghost151.BoardPosition#setColumn(int)}
+	 * .
 	 */
 	@Test
 	public void testSetColumn() {
