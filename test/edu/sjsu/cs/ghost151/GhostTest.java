@@ -40,4 +40,9 @@ public class GhostTest {
 		assertArrayEquals(explored, testGhost.getExploredPositions());
 	}
 
+	@Test
+	public void isTargetAcquiredTest(){
+		Ghost targetTest = new Ghost();
+		assertFalse(targetTest.IsTargetAcquired());
+	}
 }
