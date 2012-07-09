@@ -94,12 +94,17 @@ public class GhostTest {
 	@Test
 	public void testCommunicateWith(){
 		Ghost g1 = new Ghost();
-		BoardObjectType[][] explored = new BoardObjectType[20][10];
+		BoardObjectType[][] explored = new BoardObjectType[10][11];
+		BoardPosition testBP = new BoardPosition(10,5);
 		g1.setExploredPositions(explored);
+		g1.setPosition(testBP);
 		Ghost g2 = new Ghost();	
 		BoardObjectType[][] explored2 = new BoardObjectType[10][10];
 		g2.setExploredPositions(explored2);
+		BoardPosition testBP2 = new BoardPosition(10,4);
+		g2.setPosition(testBP2);
 		g1.CommunicateWith(g2);
+		g2.CommunicateWith(g1);
 		assertArrayEquals(g1.getExploredPositions(), g2.getExploredPositions());		
 	}
 	
