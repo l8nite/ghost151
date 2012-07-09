@@ -4,7 +4,7 @@
 package edu.sjsu.cs.ghost151;
 
 import static org.junit.Assert.*;
-
+import java.util.Random;
 import org.junit.Test;
 
 /**
@@ -58,8 +58,19 @@ public class GhostTest {
 	 */
 	@Test
 	public void testMove(){
+		Board newBoard = Board.INSTANCE;
+		BoardPosition testBP = new BoardPosition(10,5);
+		BoardObject testObj = new BoardObject(BoardObjectType.Target);
+		newBoard.SetObjectAt(testBP, testObj);
 		
-		
+		Ghost moveTest = new Ghost();
+		BoardPosition testGBP = new BoardPosition(10,4);
+		moveTest.setPosition(testGBP);
+		while(!moveTest.IsTargetAcquired()){		
+			moveTest.Scan();
+			moveTest.Move();
+		}
+		assertEquals(testBP, moveTest.getPosition());
 	}
 	
 	/**
