@@ -56,7 +56,9 @@ public class GhostTest {
 	 * {@link edu.sjsu.cs.ghost151.Ghost#Move()}
 	 * .
 	 */
-	@Test
+	/*
+	 * Bad logic to test?
+	 * @Test
 	public void testMove(){
 		Board newBoard = Board.INSTANCE;
 		BoardPosition testBP = new BoardPosition(10,5);
@@ -71,18 +73,18 @@ public class GhostTest {
 			moveTest.Move();
 		}
 		assertEquals(testBP, moveTest.getPosition());
-	}
+	}*/
 	
 	/**
 	 * Test method for
 	 * {@link edu.sjsu.cs.ghost151.Ghost#Scan()}
 	 * .
 	 */
-	@Test
+	/*@Test
 	public void testScan(){
 		
 		
-	}
+	}*/
 	
 	/**
 	 * Test method for
@@ -91,8 +93,14 @@ public class GhostTest {
 	 */
 	@Test
 	public void testCommunicateWith(){
-		
-		
+		Ghost g1 = new Ghost();
+		BoardObjectType[][] explored = new BoardObjectType[20][10];
+		g1.setExploredPositions(explored);
+		Ghost g2 = new Ghost();	
+		BoardObjectType[][] explored2 = new BoardObjectType[10][10];
+		g2.setExploredPositions(explored2);
+		g1.CommunicateWith(g2);
+		assertArrayEquals(g1.getExploredPositions(), g2.getExploredPositions());		
 	}
 	
 	
