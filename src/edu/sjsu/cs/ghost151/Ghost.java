@@ -1,5 +1,6 @@
 package edu.sjsu.cs.ghost151;
 
+import java.util.ArrayList;
 import java.util.Random;
 
 /**
@@ -18,14 +19,15 @@ public class Ghost extends BoardObject {
 	private boolean targetAcquired = false;
 	private BoardPosition movePosition = null;
 	private Random generator;
-	
+	private ArrayList<Ghost> ghostsToCommunicateWith;
+
 	/**
 	 * Construct a Ghost object that is aware of positions its explored.
 	 */
 	public Ghost() {
 		this(new Random());
 	}
-	
+
 	public Ghost(Random generator) {
 		super(BoardObjectType.Ghost);
 		exploredPositions = new BoardObjectType[Board.ROWS][Board.COLUMNS];
@@ -39,16 +41,6 @@ public class Ghost extends BoardObject {
 	 */
 	public BoardObjectType[][] getExploredPositions() {
 		return exploredPositions;
-	}
-
-	/**
-	 * Set the explored positions for the object.
-	 * 
-	 * @param exploredPositions
-	 *            set the explored positions array
-	 */
-	public void setExploredPositions(BoardObjectType[][] exploredPositions) {
-		this.exploredPositions = exploredPositions;
 	}
 
 	/**
@@ -66,12 +58,13 @@ public class Ghost extends BoardObject {
 	 * @param ghost
 	 *            the Ghost object to communicate with
 	 */
-	public void CommunicateWith(Ghost ghost) {
+	private void CommunicateWith(Ghost ghost) {
 		BoardObjectType[][] incoming = ghost.getExploredPositions();
 
 		for (int row = 0; row < incoming.length; ++row) {
 			for (int column = 0; column < incoming[row].length; ++column) {
-				if (exploredPositions[row][column] == null) {
+				if (incoming[row][column] != null
+						&& exploredPositions[row][column] == null) {
 					exploredPositions[row][column] = incoming[row][column];
 				}
 			}
@@ -85,6 +78,7 @@ public class Ghost extends BoardObject {
 	 */
 	public void Scan() {
 		BoardObject[] surroundings = board.GetSurroundings(this);
+		ghostsToCommunicateWith = new ArrayList<Ghost>();
 
 		for (int i = 0; i < surroundings.length; ++i) {
 			BoardObject object = surroundings[i];
@@ -101,10 +95,7 @@ public class Ghost extends BoardObject {
 			}
 
 			if (object.getType() == BoardObjectType.Ghost) {
-				// communicate with this ghost and vice-versa
-				this.CommunicateWith((Ghost) object);
-				((Ghost) object).CommunicateWith(this);
-				Game.INSTANCE.IncrementCommunicationsCount();
+				ghostsToCommunicateWith.add((Ghost) object);
 			}
 		}
 
@@ -116,7 +107,21 @@ public class Ghost extends BoardObject {
 			movePosition = surroundings[randomSurrounding].getPosition();
 		}
 	}
+	
+	/**
+	 * Part of the Update() loop - communicates with any ghosts it saw
+	 */
+	public void Communicate() {
+		for (Ghost ghost : ghostsToCommunicateWith) {
+			// communicate with this ghost and vice-versa
+			this.CommunicateWith(ghost);
+			Game.INSTANCE.IncrementCommunicationsCount();
+		}
+	}
 
+	/**
+	 * Part of the Update() loop - moves to the targeted position 
+	 */
 	public void Move() {
 		MoveTo(movePosition);
 	}

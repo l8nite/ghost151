@@ -125,13 +125,15 @@ public enum Game {
 	 * may end.
 	 */
 	public void Update() {
-		for (int i = 0; i < numberOfGhosts; ++i) {
-			Ghost ghost = ghosts[i];
+		for (Ghost ghost : ghosts) {
 			ghost.Scan();
 		}
+		
+		for (Ghost ghost : ghosts) {
+			ghost.Communicate();
+		}
 
-		for (int i = 0; i < numberOfGhosts; ++i) {
-			Ghost ghost = ghosts[i];
+		for (Ghost ghost : ghosts) {
 			ghost.Move();
 
 			if (ghost.IsTargetAcquired()) {
@@ -139,6 +141,7 @@ public enum Game {
 				return;
 			}
 		}
+		
 	}
 
 	/**

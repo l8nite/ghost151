@@ -4,7 +4,6 @@
 package edu.sjsu.cs.ghost151;
 
 import static org.junit.Assert.*;
-import java.util.Random;
 import org.junit.Test;
 
 /**
@@ -16,97 +15,67 @@ import org.junit.Test;
 public class GhostTest {
 
 	/**
-	 * Test method for {@link edu.sjsu.cs.ghost151.Ghost#getExploredPositions()}
-	 * .
+	 * Test method for {@link edu.sjsu.cs.ghost151.Ghost#isTargetAcquired()} .
 	 */
 	@Test
-	public void testGetExploredPositions() {
-		BoardObjectType[][] explored = new BoardObjectType[20][10];
-		Ghost testGhost = new Ghost();
-		testGhost.setExploredPositions(explored);
-		assertNotNull(testGhost.getExploredPositions());
+	public void testGhostTargetAcquisition() {
+		Ghost ghost = new Ghost();
+		assertFalse(ghost.IsTargetAcquired());
+
+		Board board = Board.INSTANCE;
+		board.Initialize();
+
+		// put the ghost and target next to each other
+		board.SetObjectAt(new BoardPosition(1, 1), ghost);
+		board.SetObjectAt(new BoardPosition(1, 2), new BoardObject(
+				BoardObjectType.Target));
+
+		// have the ghost scan and see if it acquires the target
+		ghost.Scan();
+		assertTrue(ghost.IsTargetAcquired());
 	}
 
-	/**
-	 * Test method for
-	 * {@link edu.sjsu.cs.ghost151.Ghost#setExploredPositions(edu.sjsu.cs.ghost151.BoardPosition[])}
-	 * .
-	 */
-	@Test
-	public void testSetExploredPositions() {
-		BoardObjectType[][] explored = new BoardObjectType[20][10];
-		Ghost testGhost = new Ghost();
-		testGhost.setExploredPositions(explored);
-		assertArrayEquals(explored, testGhost.getExploredPositions());
-	}
-	
-	/**
-	 * Test method for
-	 * {@link edu.sjsu.cs.ghost151.Ghost#isTargetAcquired()}
-	 * .
-	 */
-	@Test
-	public void testIsTargetAcquired(){
-		Ghost targetTest = new Ghost();
-		assertFalse(targetTest.IsTargetAcquired());
-	}
-	
-	/**
-	 * Test method for
-	 * {@link edu.sjsu.cs.ghost151.Ghost#Move()}
-	 * .
-	 */
-	/*
-	 * Bad logic to test?
-	 * @Test
-	public void testMove(){
-		Board newBoard = Board.INSTANCE;
-		BoardPosition testBP = new BoardPosition(10,5);
-		BoardObject testObj = new BoardObject(BoardObjectType.Target);
-		newBoard.SetObjectAt(testBP, testObj);
-		
-		Ghost moveTest = new Ghost();
-		BoardPosition testGBP = new BoardPosition(10,4);
-		moveTest.setPosition(testGBP);
-		while(!moveTest.IsTargetAcquired()){		
-			moveTest.Scan();
-			moveTest.Move();
-		}
-		assertEquals(testBP, moveTest.getPosition());
-	}*/
-	
-	/**
-	 * Test method for
-	 * {@link edu.sjsu.cs.ghost151.Ghost#Scan()}
-	 * .
-	 */
-	/*@Test
-	public void testScan(){
-		
-		
-	}*/
-	
 	/**
 	 * Test method for
 	 * {@link edu.sjsu.cs.ghost151.Ghost#CommunicateWith(edu.sjsu.cs.ghost151.Ghost)}
 	 * .
 	 */
 	@Test
-	public void testCommunicateWith(){
-		Ghost g1 = new Ghost();
-		BoardObjectType[][] explored = new BoardObjectType[10][11];
-		BoardPosition testBP = new BoardPosition(10,5);
-		g1.setExploredPositions(explored);
-		g1.setPosition(testBP);
-		Ghost g2 = new Ghost();	
-		BoardObjectType[][] explored2 = new BoardObjectType[10][10];
-		g2.setExploredPositions(explored2);
-		BoardPosition testBP2 = new BoardPosition(10,4);
-		g2.setPosition(testBP2);
-		g1.CommunicateWith(g2);
-		g2.CommunicateWith(g1);
-		assertArrayEquals(g1.getExploredPositions(), g2.getExploredPositions());		
+	public void testGhostCommunication() {
+		Board board = Board.INSTANCE;
+		board.Initialize();
+
+		// put two ghosts on the board near one another and then have them scan
+		// to see if they communicate
+		Ghost ghost1 = new Ghost();
+		board.SetObjectAt(new BoardPosition(1, 1), ghost1);
+
+		Ghost ghost2 = new Ghost();
+		board.SetObjectAt(new BoardPosition(2, 2), ghost2);
+
+		// have them scan the area, they will see each other and communicate
+		ghost1.Scan();
+		ghost2.Scan();
+		
+		ghost1.Communicate();
+		ghost2.Communicate();
+
+		// see if ghost1 knows about something that only ghost2 would have seen,
+		// like
+		// what's at position 3, 3
+		BoardObjectType[][] ghost1ExploredPositions = ghost1
+				.getExploredPositions();
+
+		assertNotNull(ghost1ExploredPositions[3][3]);
+		assertEquals(BoardObjectType.Empty, ghost1ExploredPositions[3][3]);
+
+		// also see if ghost2 knows something that only ghost1 can see, like
+		// what's at position 0, 0
+		BoardObjectType[][] ghost2ExploredPositions = ghost2
+				.getExploredPositions();
+
+		assertNotNull(ghost2ExploredPositions[0][0]);
+		assertEquals(BoardObjectType.Wall, ghost2ExploredPositions[0][0]);
 	}
-	
-	
+
 }

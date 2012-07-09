@@ -64,4 +64,11 @@ public class BoardPosition {
 		this.column = column;
 	}
 
+	/**
+	 * Returns a string representation of this position.
+	 */
+	@Override
+	public String toString() {
+		return "(" + row + ", " + column + ")";
+	}
 }
