@@ -32,6 +32,7 @@ public class GhostTest {
 
 		// have the ghost scan and see if it acquires the target
 		ghost.Scan();
+		ghost.Move();
 		assertTrue(ghost.IsTargetAcquired());
 	}
 

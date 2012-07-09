@@ -1,6 +1,5 @@
 package edu.sjsu.cs.ghost151;
 
-import java.util.ArrayList;
 import java.util.Random;
 
 /**
@@ -17,9 +16,8 @@ import java.util.Random;
 public class Ghost extends BoardObject {
 	private BoardObjectType exploredPositions[][];
 	private boolean targetAcquired = false;
-	private BoardPosition movePosition = null;
 	private Random generator;
-	private ArrayList<Ghost> ghostsToCommunicateWith;
+	private BoardObject[] surroundings = new BoardObject[0];
 
 	/**
 	 * Construct a Ghost object that is aware of positions its explored.
@@ -72,58 +70,55 @@ public class Ghost extends BoardObject {
 	}
 
 	/**
-	 * Update the Ghost object of surrounding area. If the target was seen, then
-	 * move to it else look for a Ghost to communicate with it. Finally, move to
-	 * a new location and update Ghost object's position.
+	 * Part of the Update() loop - update our exploredPositions matrix
 	 */
 	public void Scan() {
-		BoardObject[] surroundings = board.GetSurroundings(this);
-		ghostsToCommunicateWith = new ArrayList<Ghost>();
+		surroundings = board.GetSurroundings(this);
 
 		for (int i = 0; i < surroundings.length; ++i) {
 			BoardObject object = surroundings[i];
 			BoardPosition position = object.getPosition();
+			BoardObjectType type = object.getType();
 
-			// mark this position as explored with what we've seen there
-			exploredPositions[position.getRow()][position.getColumn()] = object
-					.getType();
-
-			if (object.getType() == BoardObjectType.Target) {
-				// move to the target space and acquire it
-				targetAcquired = true;
-				movePosition = position;
-			}
-
-			if (object.getType() == BoardObjectType.Ghost) {
-				ghostsToCommunicateWith.add((Ghost) object);
-			}
-		}
-
-		// if we haven't acquired the target during this scan, pick a random
-		// location to move to
-		// TODO: move more intelligently.
-		if (!targetAcquired) {
-			int randomSurrounding = generator.nextInt(surroundings.length);
-			movePosition = surroundings[randomSurrounding].getPosition();
+			exploredPositions[position.getRow()][position.getColumn()] = type;
 		}
 	}
-	
+
 	/**
-	 * Part of the Update() loop - communicates with any ghosts it saw
+	 * Part of the Update() loop - communicates with any ghosts in the surroundings
+	 * @pre Requires Scan() to have updated the surroundings array
 	 */
 	public void Communicate() {
-		for (Ghost ghost : ghostsToCommunicateWith) {
-			// communicate with this ghost and vice-versa
-			this.CommunicateWith(ghost);
-			Game.INSTANCE.IncrementCommunicationsCount();
+		for (BoardObject object : surroundings) {
+			if (object.getType() == BoardObjectType.Ghost) {
+				// 	communicate with this ghost and vice-versa
+				this.CommunicateWith((Ghost)object);
+				Game.INSTANCE.IncrementCommunicationsCount();
+			}
 		}
 	}
 
 	/**
-	 * Part of the Update() loop - moves to the targeted position 
+	 * Part of the Update() loop - moves to the targeted position
+	 * @pre Requires Scan() to have updated the surroundings array
 	 */
 	public void Move() {
-		MoveTo(movePosition);
+		// TODO: move more intelligently.
+		for (BoardObject object : surroundings) {
+			if (object.getType() == BoardObjectType.Target) {
+				targetAcquired = true;
+				MoveTo(object.getPosition());
+				return;
+			}
+		}
+		
+		if (!targetAcquired) {
+			if (!targetAcquired) {
+				int randomSurrounding = generator.nextInt(surroundings.length);
+				MoveTo(surroundings[randomSurrounding].getPosition());
+				return;
+			}
+		}
 	}
 
 	/**
