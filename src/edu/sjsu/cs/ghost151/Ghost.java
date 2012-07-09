@@ -86,7 +86,7 @@ public class Ghost extends BoardObject {
 
 	/**
 	 * Part of the Update() loop - communicates with any ghosts in the surroundings
-	 * @pre Requires Scan() to have updated the surroundings array
+	 * @Precondition Requires Scan() to have updated the surroundings array
 	 */
 	public void Communicate() {
 		for (BoardObject object : surroundings) {
@@ -100,7 +100,7 @@ public class Ghost extends BoardObject {
 
 	/**
 	 * Part of the Update() loop - moves to the targeted position
-	 * @pre Requires Scan() to have updated the surroundings array
+	 * @Precondition Requires Scan() to have updated the surroundings array
 	 */
 	public void Move() {
 		// TODO: move more intelligently.
