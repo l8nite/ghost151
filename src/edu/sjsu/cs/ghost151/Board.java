@@ -18,8 +18,8 @@ import java.util.ArrayList;
 public enum Board {
 	INSTANCE; // singleton
 
-	public static final int ROWS = 10;
-	public static final int COLUMNS = 20;
+	public static final int ROWS = 20;
+	public static final int COLUMNS = 40;
 
 	private BoardObject grid[][];
 
@@ -61,7 +61,25 @@ public enum Board {
 		for (int row = 0; row < ROWS; ++row) {
 			for (int column = 0; column < COLUMNS; ++column) {
 				BoardObject object = grid[row][column];
-				sb.append(object.toString());
+				
+				if (object.getType() == BoardObjectType.Target || object.getType() == BoardObjectType.Ghost) {
+					sb.append(object.toString());
+				}
+				else {
+					boolean isExplored = false;
+					for (Ghost ghost : Game.INSTANCE.getGhosts()) {
+						BoardObjectType[][] explored = ghost.getExploredPositions();
+						if (explored[row][column] != null) {
+							sb.append(object.toString());
+							isExplored = true;
+							break;
+						}
+					}
+					
+					if (!isExplored) {
+						sb.append("#");
+					}
+				}
 			}
 
 			sb.append("\n");

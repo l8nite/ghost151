@@ -56,7 +56,7 @@ public enum Game {
 		ghosts = new Ghost[numberOfGhosts];
 
 		for (int i = 0; i < numberOfGhosts; ++i) {
-			ghosts[i] = new Ghost(generator);
+			ghosts[i] = new Ghost();
 
 			// we always know that position 0,0 won't be empty (it's a wall)
 			BoardPosition position = new BoardPosition(0, 0);
@@ -104,6 +104,12 @@ public enum Game {
 
 		isRunning = true;
 
+		Render();
+		try {
+			Thread.sleep(1000);
+		} catch (InterruptedException interruptedException) {
+		}
+
 		while (isRunning) {
 			Update();
 			Render();
@@ -111,7 +117,7 @@ public enum Game {
 
 			// slow down the game loop so that rendering is human-speed
 			try {
-				Thread.sleep(500);
+				Thread.sleep(1000);
 			} catch (InterruptedException interruptedException) {
 			}
 		}
@@ -128,7 +134,7 @@ public enum Game {
 		for (Ghost ghost : ghosts) {
 			ghost.Scan();
 		}
-		
+
 		for (Ghost ghost : ghosts) {
 			ghost.Communicate();
 		}
@@ -141,7 +147,7 @@ public enum Game {
 				return;
 			}
 		}
-		
+
 	}
 
 	/**

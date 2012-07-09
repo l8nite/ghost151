@@ -9,9 +9,9 @@ package edu.sjsu.cs.ghost151;
  * @author Shaun Guth
  * @author Jerry Phul
  */
-public class BoardPosition {
-	private int row;
-	private int column;
+public class BoardPosition implements Comparable<BoardPosition> {
+	protected int row;
+	protected int column;
 
 	/**
 	 * Holds the board position of the object.
@@ -70,5 +70,22 @@ public class BoardPosition {
 	@Override
 	public String toString() {
 		return "(" + row + ", " + column + ")";
+	}
+
+	/**
+	 * Compares two positions
+	 * 
+	 * "less than" another position if it is higher or left in the grid
+	 * "greater than" otherwise
+	 */
+	@Override
+	public int compareTo(BoardPosition position) {
+		if (position.getRow() == row && position.getColumn() == column) {
+			return 0;
+		} else if (position.getRow() < row || position.getColumn() < column) {
+			return -1;
+		} else {
+			return 1;
+		}
 	}
 }

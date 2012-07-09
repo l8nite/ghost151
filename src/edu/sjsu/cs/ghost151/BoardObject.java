@@ -12,7 +12,7 @@ package edu.sjsu.cs.ghost151;
  */
 public class BoardObject {
 
-	private BoardPosition position;
+	protected BoardPosition position;
 	private BoardObjectType type;
 	protected Board board;
 
