@@ -103,7 +103,6 @@ public class Ghost extends BoardObject {
 	 * @Precondition Requires Scan() to have updated the surroundings array
 	 */
 	public void Move() {
-		// TODO: move more intelligently.
 		for (BoardObject object : surroundings) {
 			if (object.getType() == BoardObjectType.Target) {
 				targetAcquired = true;
@@ -113,11 +112,9 @@ public class Ghost extends BoardObject {
 		}
 		
 		if (!targetAcquired) {
-			if (!targetAcquired) {
-				int randomSurrounding = generator.nextInt(surroundings.length);
-				MoveTo(surroundings[randomSurrounding].getPosition());
-				return;
-			}
+			int randomSurrounding = generator.nextInt(surroundings.length);
+			MoveTo(surroundings[randomSurrounding].getPosition());
+			return;
 		}
 	}
 
