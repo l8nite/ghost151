@@ -87,7 +87,7 @@ public enum Game {
 
 		BoardObject target = new BoardObject(BoardObjectType.Target);
 
-		board.SetObjectAt(position, target);
+		//board.SetObjectAt(position, target);
 	}
 
 	/**
@@ -117,7 +117,7 @@ public enum Game {
 
 			// slow down the game loop so that rendering is human-speed
 			try {
-				Thread.sleep(1000);
+				Thread.sleep(500);
 			} catch (InterruptedException interruptedException) {
 			}
 		}
@@ -154,6 +154,10 @@ public enum Game {
 			}
 		}
 
+	}
+	
+	public void Terminate() {
+		isRunning = false;
 	}
 
 	/**

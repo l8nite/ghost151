@@ -16,10 +16,9 @@ import java.util.Random;
  * @author Jerry Phul
  */
 public class Ghost extends BoardObject {
-	private BoardObjectType exploredPositions[][];
+	private boolean exploredPositions[][];
 	private boolean targetAcquired = false;
 	private BoardObject[] surroundings = new BoardObject[0];
-	private BoardPosition nextPosition = null; // where we want to go next
 	private Random generator;
 
 	/**
@@ -32,16 +31,191 @@ public class Ghost extends BoardObject {
 	public Ghost(Random generator) {
 		super(BoardObjectType.Ghost);
 		this.generator = generator;
-		exploredPositions = new BoardObjectType[Board.ROWS][Board.COLUMNS];
+		exploredPositions = new boolean[Board.ROWS][Board.COLUMNS];
 	}
 
 	/**
-	 * Get the explored positions.
-	 * 
-	 * @return the explored positions array
+	 * Part of the Update() loop - update our exploredPositions matrix
 	 */
-	public BoardObjectType[][] getExploredPositions() {
-		return exploredPositions;
+	public void Scan() {
+		surroundings = board.GetSurroundings(this);
+
+		for (BoardObject object : surroundings) {
+			MarkAsExplored(object.getPosition());
+		}
+	}
+
+	/**
+	 * Synchronize places explored between Ghost objects.
+	 * 
+	 * @param ghost
+	 *            the Ghost object to communicate with
+	 */
+	public void CommunicateWith(Ghost ghost) {
+		boolean[][] incoming = ghost.getExploredPositions();
+
+		for (int row = 0; row < incoming.length; ++row) {
+			for (int column = 0; column < incoming[row].length; ++column) {
+				if (incoming[row][column] != false
+						&& exploredPositions[row][column] == false) {
+					exploredPositions[row][column] = incoming[row][column];
+				}
+			}
+		}
+	}
+
+	/**
+	 * Part of the Update() loop - moves to the targeted position
+	 * 
+	 * @Precondition Requires Scan() to have updated the surroundings array
+	 */
+	public void Move() {
+		// first, look within our immediate vicinity for the target, go to it if
+		// found.
+		for (BoardObject object : surroundings) {
+			if (object.getType() == BoardObjectType.Target) {
+				MoveTo(object.getPosition());
+				return;
+			}
+		}
+
+		// otherwise, figure out a new target we want to move towards
+		BoardPosition nextMovePosition = DetermineNextMovePosition();
+
+		// then figure out how to get closer to it
+		BoardDirection nextMoveDirection = DirectionTowards(nextMovePosition);
+
+		// then move that way
+		MoveTo(nextMoveDirection.PositionFrom(this.position));
+	}
+
+	/**
+	 * Looks radially outward from our position to determine the "nearest"
+	 * unexplored space in a given direction. Failing that, randomly chooses one
+	 * of the unexplored spaces remaining on the board and moves towards that.
+	 * 
+	 * @return a position that we want to move towards
+	 */
+	private BoardPosition DetermineNextMovePosition() {
+		HashMap<BoardDirection, ScoredBoardPosition> scores = new HashMap<BoardDirection, ScoredBoardPosition>();
+
+		ArrayList<ScoredBoardPosition> tiedChoices = new ArrayList<ScoredBoardPosition>();
+		int minimumScore = Integer.MAX_VALUE;
+
+		for (BoardDirection direction : BoardDirection.values()) {
+			if (direction == BoardDirection.STAYPUT) {
+				continue;
+			}
+			
+			ScoredBoardPosition scoredPosition = LinearCountExploredPositions(direction);
+			scores.put(direction, scoredPosition);
+			
+			int score = scoredPosition.getScore();
+
+			if (score != -1 && score < minimumScore) {
+				minimumScore = score;
+				tiedChoices.clear();
+				tiedChoices.add(scoredPosition);
+			} else if (score != -1 && score == minimumScore) {
+				tiedChoices.add(scoredPosition);
+			}
+		}
+		
+		BoardPosition targetPosition = null;
+
+		if (tiedChoices.size() > 0) {
+			int randomTieBreakerIndex = generator.nextInt(tiedChoices.size());
+			targetPosition  = tiedChoices.get(randomTieBreakerIndex);
+		}
+
+		// if we couldn't find an unexplored space in any of the 8 directions
+		// then we'll just pick a remaining unexplored space at random
+		if (targetPosition == null) {
+			ArrayList<BoardPosition> unexplored = new ArrayList<BoardPosition>();
+			for (int row = 0; row < Board.ROWS; ++row) {
+				for (int column = 0; column < Board.COLUMNS; ++column) {
+					if (exploredPositions[row][column] == false) {
+						unexplored.add(new BoardPosition(row, column));
+					}
+				}
+			}
+
+			int randomUnexploredIndex = generator.nextInt(unexplored.size());
+			targetPosition = unexplored.get(randomUnexploredIndex);
+		}
+		
+		return targetPosition;
+	}
+
+	/**
+	 * Count the number of unexplored positions in a straight direction from our
+	 * position
+	 * 
+	 * @param direction
+	 *            The direction to count
+	 * @return A "scored" BoardPosition where the score is the number of
+	 *         explored spaces that would be traversed before reaching an
+	 *         unexplored space. The score is -1 if there are no unexplored
+	 *         spaces in the given direction
+	 */
+	private ScoredBoardPosition LinearCountExploredPositions(
+			BoardDirection direction) {
+		int row = position.getRow();
+		int column = position.getColumn();
+
+		int dx = direction.getColumnOffset();
+		int dy = direction.getRowOffset();
+
+		int exploredPositionCount = 0;
+
+		while ((row + dy) >= 0 && (row + dy) < Board.ROWS && (column + dx) >= 0
+				&& (column + dx) < Board.COLUMNS) {
+			row += dy;
+			column += dx;
+
+			if (exploredPositions[row][column] == false) {
+				break;
+			}
+
+			++exploredPositionCount;
+		}
+
+		ScoredBoardPosition scoredBoardPosition = new ScoredBoardPosition(row,
+				column, exploredPositionCount);
+
+		// if we ended up hitting a boundary, then there are no unexplored
+		// positions in this direction --
+		if (exploredPositions[row][column] != false) {
+			scoredBoardPosition.setScore(-1);
+		}
+
+		scoredBoardPosition.setLabel(direction.toString());
+		return scoredBoardPosition;
+	}
+
+	/**
+	 * Move an object from it's current position to a new position.
+	 * 
+	 * @param newPosition
+	 *            the object's new position
+	 */
+	private void MoveTo(BoardPosition newPosition) {
+		BoardObject targetObject = board.GetObjectAt(newPosition);
+
+		if (null == newPosition || !targetObject.IsValidMoveTarget()) {
+			return;
+		}
+
+		// check if we're acquiring the target
+		if (targetObject.getType() == BoardObjectType.Target) {
+			targetAcquired = true;
+		}
+
+		BoardPosition oldPosition = this.getPosition();
+		board.SetObjectAt(oldPosition, new BoardObject(BoardObjectType.Empty));
+		board.SetObjectAt(newPosition, this);
+
+		Game.INSTANCE.IncrementMovementCount();
 	}
 
 	/**
@@ -54,218 +228,71 @@ public class Ghost extends BoardObject {
 	}
 
 	/**
-	 * Synchronize places explored between Ghost objects.
+	 * Mark a given position on the board as "explored"
 	 * 
-	 * @param ghost
-	 *            the Ghost object to communicate with
+	 * @param position
+	 *            the position to mark as explored
 	 */
-	public void CommunicateWith(Ghost ghost) {
-		BoardObjectType[][] incoming = ghost.getExploredPositions();
-
-		for (int row = 0; row < incoming.length; ++row) {
-			for (int column = 0; column < incoming[row].length; ++column) {
-				if (incoming[row][column] != null
-						&& exploredPositions[row][column] == null) {
-					exploredPositions[row][column] = incoming[row][column];
-				}
-			}
-		}
-		
-		DetermineNextMovePosition();
+	private void MarkAsExplored(BoardPosition position) {
+		exploredPositions[position.getRow()][position.getColumn()] = true;
 	}
 
 	/**
-	 * Part of the Update() loop - update our exploredPositions matrix
+	 * Determine a BoardDirection that gets us closer to targetPosition given
+	 * the constraints of the board (edges, etc).
+	 * 
+	 * @param targetPosition
+	 *            the position we want to move towards
+	 * @return the direction the ghost should move
 	 */
-	public void Scan() {
-		surroundings = board.GetSurroundings(this);
+	private BoardDirection DirectionTowards(BoardPosition targetPosition) {
+		// and then move towards it
+		BoardDirection moveDirection = BoardDirection.STAYPUT;
 
-		for (BoardObject object : surroundings) {
-			BoardPosition position = object.getPosition();
-			BoardObjectType type = object.getType();
-
-			exploredPositions[position.getRow()][position.getColumn()] = type;
+		if (targetPosition.getRow() > targetPosition.getRow()) {
+			moveDirection.setRowOffset(BoardDirection.ROW_OFFSET_DOWN);
+		} else if (targetPosition.getRow() < targetPosition.getRow()) {
+			moveDirection.setRowOffset(BoardDirection.ROW_OFFSET_UP);
 		}
+
+		// if we can't move up or down from where we are, then we need to stay
+		// put
+		if (!AbleToMoveDirection(moveDirection)) {
+			moveDirection.setRowOffset(BoardDirection.ROW_OFFSET_STAYPUT);
+		}
+
+		if (targetPosition.getColumn() > targetPosition.getColumn()) {
+			moveDirection.setColumnOffset(BoardDirection.COLUMN_OFFSET_RIGHT);
+		} else if (targetPosition.getColumn() < targetPosition.getColumn()) {
+			moveDirection.setColumnOffset(BoardDirection.COLUMN_OFFSET_LEFT);
+		}
+
+		// if we can't move left or right from where we are, then we need to
+		// stay put
+		if (!AbleToMoveDirection(moveDirection)) {
+			moveDirection.setRowOffset(BoardDirection.ROW_OFFSET_STAYPUT);
+		}
+
+		return moveDirection;
 	}
 
 	/**
-	 * Part of the Update() loop - communicates with any ghosts in the
-	 * surroundings
+	 * Determine if we're able to move in the given direction from our current
+	 * position
 	 * 
-	 * @Precondition Requires Scan() to have updated the surroundings array
+	 * @param direction
+	 *            the direction we want to know about
+	 * @return true if we're able to move in that direction
+	 * @return false otherwise
 	 */
-	public void Communicate() {
-		for (BoardObject object : surroundings) {
-			if (object.getType() == BoardObjectType.Ghost) {
-				// communicate with this ghost and vice-versa
-				this.CommunicateWith((Ghost) object);
-				Game.INSTANCE.IncrementCommunicationsCount();
-			}
+	private boolean AbleToMoveDirection(BoardDirection direction) {
+		BoardPosition targetPosition = direction.PositionFrom(position);
+
+		if (board.GetObjectAt(targetPosition).IsValidMoveTarget()) {
+			return true;
 		}
 
-		// we got new information, pick a new direction based on it.
-		DetermineNextMovePosition();
-	}
-
-	/**
-	 * Part of the Update() loop - moves to the targeted position
-	 * 
-	 * @Precondition Requires Scan() to have updated the surroundings array
-	 */
-	public void Move() {
-		// first, look within our immediate vicinity for the target, go to it.
-		for (BoardObject object : surroundings) {
-			if (object.getType() == BoardObjectType.Target) {
-				MoveTo(object.getPosition());
-				return;
-			}
-		}
-
-		// if we reached our objective on the last move, pick a new objective
-		if (nextPosition == null) {
-			DetermineNextMovePosition();
-		}
-
-		// move towards nextPosition
-		int dx = 0;
-		int dy = 0;
-
-		if (nextPosition.getRow() > position.getRow()) {
-			dy = 1; // move down
-		} else if (nextPosition.getRow() < position.getRow()) {
-			dy = -1; // move up
-		}
-
-		if (nextPosition.getColumn() > position.getColumn()) {
-			dx = 1; // move right
-		} else if (nextPosition.getColumn() < position.getColumn()) {
-			dx = -1; // move left
-		}
-
-		BoardPosition moveToPosition = new BoardPosition(
-				position.getRow() + dy, position.getColumn() + dx);
-
-		if (moveToPosition.compareTo(nextPosition) == 0) {
-			nextPosition = null; // reached our stated goal
-		}
-
-		// if we're attempting to move into a wall, pick a new direction for
-		// next time
-		if (board.GetObjectAt(moveToPosition).getType() == BoardObjectType.Wall) {
-			nextPosition = null;
-		}
-
-		MoveTo(moveToPosition);
-	}
-
-	private void DetermineNextMovePosition() {
-		// next, look outward linearly from our current position and move to the
-		// nearest unexplored space
-
-		HashMap<String, ScoredBoardPosition> scores = new HashMap<String, ScoredBoardPosition>();
-
-		scores.put("UP", LinearCountExploredPositions(0, -1));
-		scores.put("LEFT", LinearCountExploredPositions(-1, 0));
-		scores.put("DOWN", LinearCountExploredPositions(0, 1));
-		scores.put("RIGHT", LinearCountExploredPositions(1, 0));
-		scores.put("UP, LEFT", LinearCountExploredPositions(-1, -1));
-		scores.put("DOWN, LEFT", LinearCountExploredPositions(-1, 1));
-		scores.put("UP, RIGHT", LinearCountExploredPositions(1, -1));
-		scores.put("DOWN, RIGHT", LinearCountExploredPositions(1, 1));
-
-		int minimumScore = Integer.MAX_VALUE;
-
-		ArrayList<ScoredBoardPosition> tiedChoices = new ArrayList<ScoredBoardPosition>();
-
-		for (String direction : scores.keySet()) {
-			ScoredBoardPosition scoredBoardPosition = scores.get(direction);
-			scoredBoardPosition.setLabel(direction);
-
-			int score = scoredBoardPosition.getScore();
-			if (score != -1 && score < minimumScore) {
-				minimumScore = score;
-				tiedChoices.clear();
-				tiedChoices.add(scoredBoardPosition);
-			} else if (score != -1 && score == minimumScore) {
-				tiedChoices.add(scoredBoardPosition);
-			}
-		}
-
-		if (tiedChoices.size() > 0) {
-			int randomTieBreakerIndex = generator.nextInt(tiedChoices.size());
-			nextPosition = tiedChoices.get(randomTieBreakerIndex);
-		}
-
-		// if we couldn't find an unexplored space in any of the 8 directions
-		// then we'll just pick one at random
-		while (nextPosition == null) {
-			int randomSurroundingIndex = generator.nextInt(surroundings.length);
-			BoardObject randomSurrounding = surroundings[randomSurroundingIndex];
-			if (randomSurrounding.getType() == BoardObjectType.Empty) {
-				nextPosition = randomSurrounding.getPosition();
-			}
-		}
-	}
-
-	private ScoredBoardPosition LinearCountExploredPositions(int dx, int dy) {
-		int row = position.getRow();
-		int column = position.getColumn();
-
-		int exploredPositionCount = 0;
-
-		while ((row + dy) >= 0 && (row + dy) < Board.ROWS && (column + dx) >= 0
-				&& (column + dx) < Board.COLUMNS) {
-			row += dy;
-			column += dx;
-
-			if (exploredPositions[row][column] == null) {
-				break;
-			}
-
-			++exploredPositionCount;
-		}
-
-		ScoredBoardPosition scoredBoardPosition = new ScoredBoardPosition(row,
-				column, exploredPositionCount);
-
-		// if we ended up hitting a boundary, then there are no unexplored
-		// positions in this direction --
-		if (exploredPositions[row][column] != null) {
-			scoredBoardPosition.setScore(-1);
-		}
-
-		return scoredBoardPosition;
-	}
-
-	/**
-	 * Move an object from it's current position to a new position.
-	 * 
-	 * @param newPosition
-	 *            the object's new position
-	 */
-	private void MoveTo(BoardPosition newPosition) {
-		if (null == newPosition) {
-			return;
-		}
-
-		// we can't move into anything but empty space or the target
-		BoardObjectType newPositionType = board.GetObjectAt(newPosition)
-				.getType();
-		if (newPositionType != BoardObjectType.Empty
-				&& newPositionType != BoardObjectType.Target) {
-			return;
-		}
-
-		// check if we're acquiring the target
-		if (newPositionType == BoardObjectType.Target) {
-			targetAcquired = true;
-		}
-
-		BoardPosition oldPosition = this.getPosition();
-		board.SetObjectAt(oldPosition, new BoardObject(BoardObjectType.Empty));
-		board.SetObjectAt(newPosition, this);
-
-		Game.INSTANCE.IncrementMovementCount();
+		return false;
 	}
 
 	/**
@@ -277,6 +304,15 @@ public class Ghost extends BoardObject {
 	@Override
 	public void setPosition(BoardPosition position) {
 		super.setPosition(position);
-		exploredPositions[position.getRow()][position.getColumn()] = BoardObjectType.Ghost;
+		MarkAsExplored(position);
+	}
+
+	/**
+	 * Get the explored positions.
+	 * 
+	 * @return the explored positions array
+	 */
+	public boolean[][] getExploredPositions() {
+		return exploredPositions;
 	}
 }

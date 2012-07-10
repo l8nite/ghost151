@@ -25,7 +25,7 @@ public class BoardPosition implements Comparable<BoardPosition> {
 		this.row = row;
 		this.column = column;
 	}
-
+	
 	/**
 	 * Retrieve the row position of the object.
 	 * 

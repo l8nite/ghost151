@@ -58,25 +58,23 @@ public class GhostTest {
 		ghost1.Scan();
 		ghost2.Scan();
 		
-		ghost1.Communicate();
-		ghost2.Communicate();
+		ghost1.CommunicateWith(ghost2);
+		ghost2.CommunicateWith(ghost1);
 
 		// see if ghost1 knows about something that only ghost2 would have seen,
 		// like
 		// what's at position 3, 3
-		BoardObjectType[][] ghost1ExploredPositions = ghost1
+		boolean[][] ghost1ExploredPositions = ghost1
 				.getExploredPositions();
 
-		assertNotNull(ghost1ExploredPositions[3][3]);
-		assertEquals(BoardObjectType.Empty, ghost1ExploredPositions[3][3]);
+		assertTrue(ghost1ExploredPositions[3][3]);
 
 		// also see if ghost2 knows something that only ghost1 can see, like
 		// what's at position 0, 0
-		BoardObjectType[][] ghost2ExploredPositions = ghost2
+		boolean[][] ghost2ExploredPositions = ghost2
 				.getExploredPositions();
 
-		assertNotNull(ghost2ExploredPositions[0][0]);
-		assertEquals(BoardObjectType.Wall, ghost2ExploredPositions[0][0]);
+		assertTrue(ghost2ExploredPositions[0][0]);
 	}
 
 }

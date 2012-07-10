@@ -26,6 +26,23 @@ public class BoardObject {
 		board = Board.INSTANCE;
 		setType(type);
 	}
+	
+	/**
+	 * Determine if this BoardObject can be "moved on" (by a ghost, for example)
+	 * @return true if the BoardObjectType is Empty or Target
+	 * @return false otherwise
+	 */
+	public boolean IsValidMoveTarget() {
+		if (type == BoardObjectType.Empty) {
+			return true;
+		}
+		
+		if (type == BoardObjectType.Target) {
+			return true;
+		}
+		
+		return false;
+	}
 
 	/**
 	 * Return the position of the object.

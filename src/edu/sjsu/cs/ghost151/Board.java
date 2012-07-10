@@ -68,8 +68,8 @@ public enum Board {
 				else {
 					boolean isExplored = false;
 					for (Ghost ghost : Game.INSTANCE.getGhosts()) {
-						BoardObjectType[][] explored = ghost.getExploredPositions();
-						if (explored[row][column] != null) {
+						boolean[][] explored = ghost.getExploredPositions();
+						if (explored[row][column] != false) {
 							sb.append(object.toString());
 							isExplored = true;
 							break;
