@@ -5,6 +5,8 @@ package edu.sjsu.cs.ghost151;
 
 import static org.junit.Assert.*;
 
+import java.util.Random;
+
 import org.junit.Before;
 import org.junit.Test;
 
@@ -54,6 +56,7 @@ public class BoardTest {
 	 */
 	@Test
 	public void testToString() {
+		Game.INSTANCE.ConfigureBoard(0, new Random());
 		board.Initialize();
 		String expected = "++++++++++++++++++++\n" 
 						+ "+                  +\n"

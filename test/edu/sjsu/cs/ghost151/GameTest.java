@@ -96,8 +96,8 @@ public class GameTest {
 		assertEquals(false, ghosts[1].IsTargetAcquired());
 		assertEquals(false, ghosts[0].IsTargetAcquired());
 
-		assertEquals(2, game.getNumberOfCommunications());
-		assertEquals(3, game.getNumberOfMovements());
+		assertEquals(12, game.getNumberOfCommunications());
+		assertEquals(4, game.getNumberOfMovements());
 	}
 
 	/**

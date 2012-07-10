@@ -19,7 +19,7 @@ public enum GhostMovementAlgorithmType {
 		case LINEAR:
 			return new LinearGhostMovementAlgorithm();
 		case NEAREST:
-			return new NearestUnexploredSpaceGhostMovementAlgorithm();
+			return new NearestGhostMovementAlgorithm();
 		default:
 			return new RandomGhostMovementAlgorithm();
 		}

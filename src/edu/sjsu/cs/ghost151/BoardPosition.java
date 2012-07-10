@@ -9,7 +9,7 @@ package edu.sjsu.cs.ghost151;
  * @author Shaun Guth
  * @author Jerry Phul
  */
-public class BoardPosition implements Comparable<BoardPosition> {
+public class BoardPosition {
 	protected int row;
 	protected int column;
 
@@ -25,7 +25,7 @@ public class BoardPosition implements Comparable<BoardPosition> {
 		this.row = row;
 		this.column = column;
 	}
-	
+
 	/**
 	 * Retrieve the row position of the object.
 	 * 
@@ -73,48 +73,36 @@ public class BoardPosition implements Comparable<BoardPosition> {
 	}
 
 	/**
-	 * Compares two positions
-	 * 
-	 * "less than" another position if it is higher or left in the grid
-	 * "greater than" otherwise
+	 * Compares two positions to see if they're the same
 	 */
 	@Override
-	public int compareTo(BoardPosition position) {
-		if (position.getRow() == row && position.getColumn() == column) {
-			return 0;
-		} else if (position.getRow() < row || position.getColumn() < column) {
-			return -1;
-		} else {
-			return 1;
+	public boolean equals(Object that) {
+		if (this == that) {
+			return true;
 		}
+		if (!(that instanceof BoardPosition)) {
+			return false;
+		}
+
+		BoardPosition position = (BoardPosition) that;
+
+		return position.getRow() == this.row
+				&& position.getColumn() == this.column;
 	}
-	
+
 	/**
-	 * Determine a BoardDirection that gets us closer to this position from
-	 * the given position (given the constraints of the board (edges, etc)).
+	 * Determine a BoardDirection that gets us closer to this position from the
+	 * given position (given the constraints of the board (edges, etc)).
 	 * 
 	 * @param position
 	 *            the position we want to move from
-	 * @return the direction the ghost should move to get to the current position
+	 * @return the direction the ghost should move to get to the current
+	 *         position
 	 */
 	public BoardDirection DirectionFrom(BoardPosition position) {
 		BoardPosition targetPosition = this;
 
-		// and then move towards it
-		BoardDirection moveDirection = BoardDirection.STAYPUT;
-
-		if (targetPosition.getRow() > position.getRow()) {
-			moveDirection.setRowOffset(BoardDirection.ROW_OFFSET_DOWN);
-		} else if (targetPosition.getRow() < position.getRow()) {
-			moveDirection.setRowOffset(BoardDirection.ROW_OFFSET_UP);
-		}
-
-		if (targetPosition.getColumn() > position.getColumn()) {
-			moveDirection.setColumnOffset(BoardDirection.COLUMN_OFFSET_RIGHT);
-		} else if (targetPosition.getColumn() < position.getColumn()) {
-			moveDirection.setColumnOffset(BoardDirection.COLUMN_OFFSET_LEFT);
-		}
-
-		return moveDirection;
+		return new BoardDirection(targetPosition.getRow() - position.getRow(),
+				targetPosition.getColumn() - position.getColumn());
 	}
 }

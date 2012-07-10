@@ -5,8 +5,8 @@ import java.util.ArrayList;
 /**
  * <b>Board</b> provides the Grid for the simulation. Additionally, it will:
  * <ul>
- * <li>set the walls on the edges of the Board <ii>place an object at a
- * given position by calling BoardObject
+ * <li>set the walls on the edges of the Board <ii>place an object at a given
+ * position by calling BoardObject
  * <li>get the surroundings of a given position by calling BoardObject
  * </ul>
  * 
@@ -18,8 +18,8 @@ import java.util.ArrayList;
 public enum Board {
 	INSTANCE; // singleton
 
-	public static final int ROWS = 20;
-	public static final int COLUMNS = 40;
+	public static final int ROWS = 10;
+	public static final int COLUMNS = 20;
 
 	private BoardObject grid[][];
 
@@ -62,23 +62,29 @@ public enum Board {
 			for (int column = 0; column < COLUMNS; ++column) {
 				BoardObject object = grid[row][column];
 
-				if (object.getType() == BoardObjectType.Target
-						|| object.getType() == BoardObjectType.Ghost) {
-					sb.append(object.toString());
-				} else {
-					boolean isExplored = false;
-					for (Ghost ghost : Game.INSTANCE.getGhosts()) {
-						boolean[][] explored = ghost.getExploredPositions();
-						if (explored[row][column] != false) {
-							sb.append(object.toString());
-							isExplored = true;
-							break;
+				boolean GHOSTVISION = false;
+				if (GHOSTVISION) {
+					if (object.getType() == BoardObjectType.Target
+							|| object.getType() == BoardObjectType.Ghost) {
+						sb.append(object.toString());
+					} else {
+						boolean isExplored = false;
+						for (Ghost ghost : Game.INSTANCE.getGhosts()) {
+							boolean[][] explored = ghost.getExploredPositions();
+							if (explored[row][column] != false) {
+								sb.append(object.toString());
+								isExplored = true;
+								break;
+							}
+						}
+	
+						if (!isExplored) {
+							sb.append("#");
 						}
 					}
-
-					if (!isExplored) {
-						sb.append("#");
-					}
+				}
+				else {
+					sb.append(object.toString());
 				}
 			}
 
@@ -108,7 +114,15 @@ public enum Board {
 	 *            the board position to get object from
 	 */
 	public BoardObject GetObjectAt(BoardPosition boardPosition) {
-		return grid[boardPosition.getRow()][boardPosition.getColumn()];
+		int row = boardPosition.getRow();
+		int column = boardPosition.getColumn();
+
+		if (row >= 0 && row < Board.ROWS && column >= 0
+				&& column < Board.COLUMNS) {
+			return grid[row][column];
+		} else {
+			return null;
+		}
 	}
 
 	/**
@@ -122,51 +136,17 @@ public enum Board {
 
 		BoardPosition center = boardObject.getPosition();
 
-		int row = center.getRow();
-		int column = center.getColumn();
-
-		// above left
-		if ((row - 1) >= 0 && (column - 1) >= 0) {
-			surroundings.add(grid[row - 1][column - 1]);
-		}
-
-		// above center
-		if ((row - 1) >= 0) {
-			surroundings.add(grid[row - 1][column]);
-		}
-
-		// above right
-		if ((row - 1) >= 0 && (column + 1) < COLUMNS) {
-			surroundings.add(grid[row - 1][column + 1]);
-		}
-
-		// left
-		if ((column - 1) >= 0) {
-			surroundings.add(grid[row][column - 1]);
-		}
-
-		// right
-		if ((column + 1) < COLUMNS) {
-			surroundings.add(grid[row][column + 1]);
-		}
-
-		// below left
-		if ((row + 1) < ROWS && (column - 1) >= 0) {
-			surroundings.add(grid[row + 1][column - 1]);
-		}
-
-		// below center
-		if ((row + 1) < ROWS) {
-			surroundings.add(grid[row + 1][column]);
-		}
-
-		// below right
-		if ((row + 1) < ROWS && (column + 1) < COLUMNS) {
-			surroundings.add(grid[row + 1][column + 1]);
+		for (BoardDirection direction : BoardDirection.CompassDirections()) {
+			BoardObject object = GetObjectAt(direction.PositionFrom(center));
+			
+			if (object != null) {
+				surroundings.add(object);
+			}
 		}
 
 		BoardObject[] surroundingsArray = new BoardObject[surroundings.size()];
 		surroundings.toArray(surroundingsArray);
+
 		return surroundingsArray;
 	}
 

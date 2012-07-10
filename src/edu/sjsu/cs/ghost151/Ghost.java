@@ -19,7 +19,7 @@ public class Ghost extends BoardObject {
 	private BoardObject[] surroundings = new BoardObject[0];
 	private Random generator;
 	private GhostMovementAlgorithm movementAlgorithm;
-	private BoardPosition nextMovePosition = null;
+	private BoardPosition goalMovePosition = null;
 
 	/**
 	 * Construct a Ghost object that is aware of positions its explored.
@@ -33,7 +33,7 @@ public class Ghost extends BoardObject {
 		this.generator = generator;
 		exploredPositions = new boolean[Board.ROWS][Board.COLUMNS];
 
-		movementAlgorithm = GhostMovementAlgorithmType.NEAREST.CreateInstance();
+		movementAlgorithm = GhostMovementAlgorithmType.LINEAR.CreateInstance();
 	}
 
 	/**
@@ -44,6 +44,10 @@ public class Ghost extends BoardObject {
 
 		for (BoardObject object : surroundings) {
 			MarkAsExplored(object.getPosition());
+
+			if (object.getType() == BoardObjectType.Target) {
+				goalMovePosition = object.getPosition();
+			}
 		}
 	}
 
@@ -72,41 +76,37 @@ public class Ghost extends BoardObject {
 	 * @Precondition Requires Scan() to have updated the surroundings array
 	 */
 	public void Move() {
-		// first, look in our vicinity for the target, go to it if found.
-		for (BoardObject object : surroundings) {
-			if (object.getType() == BoardObjectType.Target) {
-				MoveTo(object.getPosition());
-				return;
-			}
-		}
-
-		// if we've explored our last target position (or been told about it by
-		// another ghost) then pick a new one
-		if (nextMovePosition == null
-				|| exploredPositions[nextMovePosition.getRow()][nextMovePosition
-						.getColumn()]) {
-			nextMovePosition = movementAlgorithm.DetermineNextPosition(this,
+		if (goalMovePosition == null) {
+			goalMovePosition = movementAlgorithm.DetermineNextPosition(this,
 					generator);
 		}
 
-		// after that, figure out how to get closer to it
-		BoardDirection nextMoveDirection = nextMovePosition
-				.DirectionFrom(position);
+		// which direction will get us closer to our goalMovePosition?
+		BoardDirection moveDirection = goalMovePosition.DirectionFrom(position);
 
-		// if we can't move in that direction
-		// try to move horizontally or vertically instead
-		if (!AbleToMoveDirection(nextMoveDirection)) {
-			int rowOffset = nextMoveDirection.getRowOffset();
-			nextMoveDirection.setRowOffset(BoardDirection.ROW_OFFSET_STAYPUT);
-			if (!AbleToMoveDirection(nextMoveDirection)) {
-				nextMoveDirection.setRowOffset(rowOffset);
-				nextMoveDirection
-						.setColumnOffset(BoardDirection.COLUMN_OFFSET_STAYPUT);
+		// what position is in that direction?
+		BoardPosition movePosition = moveDirection.PositionFrom(position);
+
+		// if we can't move that way, try just one component
+		if (!AbleToMoveDirection(moveDirection)) {
+			int rowOffset = moveDirection.getRowOffset();
+			moveDirection = new BoardDirection(0,
+					moveDirection.getColumnOffset());
+
+			if (!AbleToMoveDirection(moveDirection)) {
+				moveDirection = new BoardDirection(rowOffset, 0);
 			}
+
+			movePosition = moveDirection.PositionFrom(position);
 		}
 
-		// then move that way
-		MoveTo(nextMoveDirection.PositionFrom(position));
+		MoveTo(movePosition);
+
+		// pick a new position to move towards if our goal was explored
+		if (exploredPositions[movePosition.getRow()][movePosition.getColumn()]) {
+			goalMovePosition = movementAlgorithm.DetermineNextPosition(this,
+					generator);
+		}
 	}
 
 	/**
@@ -163,9 +163,9 @@ public class Ghost extends BoardObject {
 	 * @return false otherwise
 	 */
 	private boolean AbleToMoveDirection(BoardDirection direction) {
-		BoardPosition targetPosition = direction.PositionFrom(position);
+		BoardPosition position = direction.PositionFrom(this.position);
 
-		if (board.GetObjectAt(targetPosition).IsValidMoveTarget()) {
+		if (board.GetObjectAt(position).IsValidMoveTarget()) {
 			return true;
 		}
 

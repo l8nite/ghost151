@@ -5,38 +5,39 @@ package edu.sjsu.cs.ghost151;
 
 /**
  * @author shaung
- *
+ * 
  */
-public enum BoardDirection {
-	STAYPUT(0,0),
-	LEFT(-1,0),
-	RIGHT(1,0),
-	UP(0,-1),
-	DOWN(0,1),
-	LEFTUP(-1,-1),
-	LEFTDOWN(-1,1),
-	RIGHTUP(1,-1),
-	RIGHTDOWN(1,1)
-	;
-	
-	public static final int COLUMN_OFFSET_RIGHT = 1;
-	public static final int COLUMN_OFFSET_LEFT = -1;
-	public static final int COLUMN_OFFSET_STAYPUT = 0;
-	
-	public static final int ROW_OFFSET_DOWN = 1;
-	public static final int ROW_OFFSET_UP = -1;
-	public static final int ROW_OFFSET_STAYPUT = 0;
-	
-	private int columnOffset;
-	private int rowOffset;
-	
-	private BoardDirection(int columnOffset, int rowOffset) {
-		this.columnOffset = columnOffset;
+public class BoardDirection {
+	public static final BoardDirection STAYPUT = new BoardDirection(0, 0);
+	public static final BoardDirection LEFT = new BoardDirection(-1, 0);
+	public static final BoardDirection RIGHT = new BoardDirection(1, 0);
+	public static final BoardDirection UP = new BoardDirection(0, -1);
+	public static final BoardDirection DOWN = new BoardDirection(0, 1);
+	public static final BoardDirection LEFTUP = new BoardDirection(-1, -1);
+	public static final BoardDirection LEFTDOWN = new BoardDirection(-1, 1);
+	public static final BoardDirection RIGHTUP = new BoardDirection(1, -1);
+	public static final BoardDirection RIGHTDOWN = new BoardDirection(1, 1);
+
+	private final int rowOffset;
+	private final int columnOffset;
+
+	public BoardDirection(int rowOffset, int columnOffset) {
+		if (rowOffset != 0) {
+			rowOffset /= Math.abs(rowOffset);
+		}
+
 		this.rowOffset = rowOffset;
+
+		if (columnOffset != 0) {
+			columnOffset /= Math.abs(columnOffset);
+		}
+
+		this.columnOffset = columnOffset;
 	}
-	
+
 	public BoardPosition PositionFrom(BoardPosition position) {
-		return new BoardPosition(position.getRow() + rowOffset, position.getColumn() + columnOffset);
+		return new BoardPosition(position.getRow() + rowOffset,
+				position.getColumn() + columnOffset);
 	}
 
 	/**
@@ -47,23 +48,27 @@ public enum BoardDirection {
 	}
 
 	/**
-	 * @param columnOffset the columnOffset to set
-	 */
-	public void setColumnOffset(int columnOffset) {
-		this.columnOffset = columnOffset;
-	}
-
-	/**
 	 * @return the rowOffset
 	 */
 	public int getRowOffset() {
 		return rowOffset;
 	}
-
+	
 	/**
-	 * @param rowOffset the rowOffset to set
+	 * @return an array of the compass BoardDirections
 	 */
-	public void setRowOffset(int rowOffset) {
-		this.rowOffset = rowOffset;
+	public static BoardDirection[] CompassDirections() {
+		BoardDirection[] compass = {
+			BoardDirection.LEFTUP,
+			BoardDirection.UP,
+			BoardDirection.RIGHTUP,
+			BoardDirection.LEFT,
+			BoardDirection.RIGHT, 
+			BoardDirection.LEFTDOWN, 
+			BoardDirection.DOWN,
+			BoardDirection.RIGHTDOWN, 
+		};
+		
+		return compass;
 	}
 }

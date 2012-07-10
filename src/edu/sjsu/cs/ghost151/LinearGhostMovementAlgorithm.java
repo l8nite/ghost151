@@ -39,11 +39,12 @@ public class LinearGhostMovementAlgorithm implements GhostMovementAlgorithm {
 
 		int minimumScore = Integer.MAX_VALUE;
 
-		for (BoardDirection direction : BoardDirection.values()) {
-			if (direction == BoardDirection.STAYPUT) {
-				continue;
-			}
+		BoardDirection[] compassDirections = { BoardDirection.LEFT,
+				BoardDirection.UP, BoardDirection.RIGHT, BoardDirection.DOWN,
+				BoardDirection.LEFTDOWN, BoardDirection.LEFTUP,
+				BoardDirection.RIGHTDOWN, BoardDirection.RIGHTUP };
 
+		for (BoardDirection direction : compassDirections) {
 			ScoredBoardPosition scoredPosition = LinearCountExploredPositions(
 					ghost, direction, targetPosition);
 			scores.put(direction, scoredPosition);

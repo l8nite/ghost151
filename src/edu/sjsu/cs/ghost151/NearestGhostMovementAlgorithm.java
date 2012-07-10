@@ -10,7 +10,8 @@ import java.util.Random;
  * @author shaung
  * 
  */
-public class NearestUnexploredSpaceGhostMovementAlgorithm implements GhostMovementAlgorithm {
+public class NearestGhostMovementAlgorithm implements
+		GhostMovementAlgorithm {
 
 	/**
 	 * See @link{edu.sjsu.cs.ghost151.LinearGhostMovementAlgorithm#
@@ -22,7 +23,8 @@ public class NearestUnexploredSpaceGhostMovementAlgorithm implements GhostMoveme
 	}
 
 	/**
-	 * Determines the nearest unexplored space on the grid and returns it. 
+	 * Determines the nearest unexplored space on the grid and returns it.
+	 * 
 	 * @return a position that we want to move towards
 	 */
 	@Override
@@ -31,7 +33,6 @@ public class NearestUnexploredSpaceGhostMovementAlgorithm implements GhostMoveme
 
 		boolean[][] explored = ghost.getExploredPositions();
 
-	
 		ArrayList<ScoredBoardPosition> tiedChoices = new ArrayList<ScoredBoardPosition>();
 		int minimumScore = Integer.MAX_VALUE;
 
@@ -40,28 +41,28 @@ public class NearestUnexploredSpaceGhostMovementAlgorithm implements GhostMoveme
 				if (explored[row][column] == false) {
 					// score this unexplored space as # of moves to reach it
 					int rowDifference = Math.abs(ghostPosition.getRow() - row);
-					int columnDifference = Math.abs(ghostPosition.getColumn() - column);
-				
+					int columnDifference = Math.abs(ghostPosition.getColumn()
+							- column);
+
 					int score = Math.max(rowDifference, columnDifference);
-					
+
 					if (score < minimumScore) {
 						minimumScore = score;
 						tiedChoices.clear();
-						tiedChoices.add(new ScoredBoardPosition(row, column, score));
-					}
-					else if (score == minimumScore) {
-						tiedChoices.add(new ScoredBoardPosition(row, column, score));
+						tiedChoices.add(new ScoredBoardPosition(row, column,
+								score));
+					} else if (score == minimumScore) {
+						tiedChoices.add(new ScoredBoardPosition(row, column,
+								score));
 					}
 				}
 			}
 		}
-		
 
 		if (tiedChoices.size() > 0) {
 			int randomTieBreakerIndex = generator.nextInt(tiedChoices.size());
 			return tiedChoices.get(randomTieBreakerIndex);
-		}
-		else {
+		} else {
 			return ghostPosition;
 		}
 	}

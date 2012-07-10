@@ -87,7 +87,7 @@ public enum Game {
 
 		BoardObject target = new BoardObject(BoardObjectType.Target);
 
-		//board.SetObjectAt(position, target);
+		board.SetObjectAt(position, target);
 	}
 
 	/**
