@@ -1,7 +1,5 @@
 package edu.sjsu.cs.ghost151;
 
-import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.Random;
 
 /**
@@ -20,6 +18,8 @@ public class Ghost extends BoardObject {
 	private boolean targetAcquired = false;
 	private BoardObject[] surroundings = new BoardObject[0];
 	private Random generator;
+	private GhostMovementAlgorithm movementAlgorithm;
+	private BoardPosition nextMovePosition = null;
 
 	/**
 	 * Construct a Ghost object that is aware of positions its explored.
@@ -32,6 +32,8 @@ public class Ghost extends BoardObject {
 		super(BoardObjectType.Ghost);
 		this.generator = generator;
 		exploredPositions = new boolean[Board.ROWS][Board.COLUMNS];
+
+		movementAlgorithm = GhostMovementAlgorithmType.NEAREST.CreateInstance();
 	}
 
 	/**
@@ -70,8 +72,7 @@ public class Ghost extends BoardObject {
 	 * @Precondition Requires Scan() to have updated the surroundings array
 	 */
 	public void Move() {
-		// first, look within our immediate vicinity for the target, go to it if
-		// found.
+		// first, look in our vicinity for the target, go to it if found.
 		for (BoardObject object : surroundings) {
 			if (object.getType() == BoardObjectType.Target) {
 				MoveTo(object.getPosition());
@@ -79,118 +80,33 @@ public class Ghost extends BoardObject {
 			}
 		}
 
-		// otherwise, figure out a new target we want to move towards
-		BoardPosition nextMovePosition = DetermineNextMovePosition();
+		// if we've explored our last target position (or been told about it by
+		// another ghost) then pick a new one
+		if (nextMovePosition == null
+				|| exploredPositions[nextMovePosition.getRow()][nextMovePosition
+						.getColumn()]) {
+			nextMovePosition = movementAlgorithm.DetermineNextPosition(this,
+					generator);
+		}
 
-		// then figure out how to get closer to it
-		BoardDirection nextMoveDirection = DirectionTowards(nextMovePosition);
+		// after that, figure out how to get closer to it
+		BoardDirection nextMoveDirection = nextMovePosition
+				.DirectionFrom(position);
+
+		// if we can't move in that direction
+		// try to move horizontally or vertically instead
+		if (!AbleToMoveDirection(nextMoveDirection)) {
+			int rowOffset = nextMoveDirection.getRowOffset();
+			nextMoveDirection.setRowOffset(BoardDirection.ROW_OFFSET_STAYPUT);
+			if (!AbleToMoveDirection(nextMoveDirection)) {
+				nextMoveDirection.setRowOffset(rowOffset);
+				nextMoveDirection
+						.setColumnOffset(BoardDirection.COLUMN_OFFSET_STAYPUT);
+			}
+		}
 
 		// then move that way
-		MoveTo(nextMoveDirection.PositionFrom(this.position));
-	}
-
-	/**
-	 * Looks radially outward from our position to determine the "nearest"
-	 * unexplored space in a given direction. Failing that, randomly chooses one
-	 * of the unexplored spaces remaining on the board and moves towards that.
-	 * 
-	 * @return a position that we want to move towards
-	 */
-	private BoardPosition DetermineNextMovePosition() {
-		HashMap<BoardDirection, ScoredBoardPosition> scores = new HashMap<BoardDirection, ScoredBoardPosition>();
-
-		ArrayList<ScoredBoardPosition> tiedChoices = new ArrayList<ScoredBoardPosition>();
-		int minimumScore = Integer.MAX_VALUE;
-
-		for (BoardDirection direction : BoardDirection.values()) {
-			if (direction == BoardDirection.STAYPUT) {
-				continue;
-			}
-			
-			ScoredBoardPosition scoredPosition = LinearCountExploredPositions(direction);
-			scores.put(direction, scoredPosition);
-			
-			int score = scoredPosition.getScore();
-
-			if (score != -1 && score < minimumScore) {
-				minimumScore = score;
-				tiedChoices.clear();
-				tiedChoices.add(scoredPosition);
-			} else if (score != -1 && score == minimumScore) {
-				tiedChoices.add(scoredPosition);
-			}
-		}
-		
-		BoardPosition targetPosition = null;
-
-		if (tiedChoices.size() > 0) {
-			int randomTieBreakerIndex = generator.nextInt(tiedChoices.size());
-			targetPosition  = tiedChoices.get(randomTieBreakerIndex);
-		}
-
-		// if we couldn't find an unexplored space in any of the 8 directions
-		// then we'll just pick a remaining unexplored space at random
-		if (targetPosition == null) {
-			ArrayList<BoardPosition> unexplored = new ArrayList<BoardPosition>();
-			for (int row = 0; row < Board.ROWS; ++row) {
-				for (int column = 0; column < Board.COLUMNS; ++column) {
-					if (exploredPositions[row][column] == false) {
-						unexplored.add(new BoardPosition(row, column));
-					}
-				}
-			}
-
-			int randomUnexploredIndex = generator.nextInt(unexplored.size());
-			targetPosition = unexplored.get(randomUnexploredIndex);
-		}
-		
-		return targetPosition;
-	}
-
-	/**
-	 * Count the number of unexplored positions in a straight direction from our
-	 * position
-	 * 
-	 * @param direction
-	 *            The direction to count
-	 * @return A "scored" BoardPosition where the score is the number of
-	 *         explored spaces that would be traversed before reaching an
-	 *         unexplored space. The score is -1 if there are no unexplored
-	 *         spaces in the given direction
-	 */
-	private ScoredBoardPosition LinearCountExploredPositions(
-			BoardDirection direction) {
-		int row = position.getRow();
-		int column = position.getColumn();
-
-		int dx = direction.getColumnOffset();
-		int dy = direction.getRowOffset();
-
-		int exploredPositionCount = 0;
-
-		while ((row + dy) >= 0 && (row + dy) < Board.ROWS && (column + dx) >= 0
-				&& (column + dx) < Board.COLUMNS) {
-			row += dy;
-			column += dx;
-
-			if (exploredPositions[row][column] == false) {
-				break;
-			}
-
-			++exploredPositionCount;
-		}
-
-		ScoredBoardPosition scoredBoardPosition = new ScoredBoardPosition(row,
-				column, exploredPositionCount);
-
-		// if we ended up hitting a boundary, then there are no unexplored
-		// positions in this direction --
-		if (exploredPositions[row][column] != false) {
-			scoredBoardPosition.setScore(-1);
-		}
-
-		scoredBoardPosition.setLabel(direction.toString());
-		return scoredBoardPosition;
+		MoveTo(nextMoveDirection.PositionFrom(position));
 	}
 
 	/**
@@ -238,45 +154,6 @@ public class Ghost extends BoardObject {
 	}
 
 	/**
-	 * Determine a BoardDirection that gets us closer to targetPosition given
-	 * the constraints of the board (edges, etc).
-	 * 
-	 * @param targetPosition
-	 *            the position we want to move towards
-	 * @return the direction the ghost should move
-	 */
-	private BoardDirection DirectionTowards(BoardPosition targetPosition) {
-		// and then move towards it
-		BoardDirection moveDirection = BoardDirection.STAYPUT;
-
-		if (targetPosition.getRow() > targetPosition.getRow()) {
-			moveDirection.setRowOffset(BoardDirection.ROW_OFFSET_DOWN);
-		} else if (targetPosition.getRow() < targetPosition.getRow()) {
-			moveDirection.setRowOffset(BoardDirection.ROW_OFFSET_UP);
-		}
-
-		// if we can't move up or down from where we are, then we need to stay
-		// put
-		if (!AbleToMoveDirection(moveDirection)) {
-			moveDirection.setRowOffset(BoardDirection.ROW_OFFSET_STAYPUT);
-		}
-
-		if (targetPosition.getColumn() > targetPosition.getColumn()) {
-			moveDirection.setColumnOffset(BoardDirection.COLUMN_OFFSET_RIGHT);
-		} else if (targetPosition.getColumn() < targetPosition.getColumn()) {
-			moveDirection.setColumnOffset(BoardDirection.COLUMN_OFFSET_LEFT);
-		}
-
-		// if we can't move left or right from where we are, then we need to
-		// stay put
-		if (!AbleToMoveDirection(moveDirection)) {
-			moveDirection.setRowOffset(BoardDirection.ROW_OFFSET_STAYPUT);
-		}
-
-		return moveDirection;
-	}
-
-	/**
 	 * Determine if we're able to move in the given direction from our current
 	 * position
 	 * 
@@ -314,5 +191,20 @@ public class Ghost extends BoardObject {
 	 */
 	public boolean[][] getExploredPositions() {
 		return exploredPositions;
+	}
+
+	/**
+	 * @return the movementAlgorithm
+	 */
+	public GhostMovementAlgorithm getMovementAlgorithm() {
+		return movementAlgorithm;
+	}
+
+	/**
+	 * @param movementAlgorithm
+	 *            the movementAlgorithm to set
+	 */
+	public void setMovementAlgorithm(GhostMovementAlgorithm movementAlgorithm) {
+		this.movementAlgorithm = movementAlgorithm;
 	}
 }

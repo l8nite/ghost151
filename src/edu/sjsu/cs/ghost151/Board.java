@@ -5,7 +5,7 @@ import java.util.ArrayList;
 /**
  * <b>Board</b> provides the Grid for the simulation. Additionally, it will:
  * <ul>
- * <li>set the walls on the perimeter of the Board <ii>place an object at a
+ * <li>set the walls on the edges of the Board <ii>place an object at a
  * given position by calling BoardObject
  * <li>get the surroundings of a given position by calling BoardObject
  * </ul>
@@ -29,9 +29,9 @@ public enum Board {
 	private Board() {
 		Initialize();
 	}
-	
+
 	/**
-	 * Initializes the board, sets the walls to the outer edges and the rest empty
+	 * Initializes empty board, sets the walls to the outer edges
 	 */
 	public void Initialize() {
 		grid = new BoardObject[ROWS][COLUMNS];
@@ -61,11 +61,11 @@ public enum Board {
 		for (int row = 0; row < ROWS; ++row) {
 			for (int column = 0; column < COLUMNS; ++column) {
 				BoardObject object = grid[row][column];
-				
-				if (object.getType() == BoardObjectType.Target || object.getType() == BoardObjectType.Ghost) {
+
+				if (object.getType() == BoardObjectType.Target
+						|| object.getType() == BoardObjectType.Ghost) {
 					sb.append(object.toString());
-				}
-				else {
+				} else {
 					boolean isExplored = false;
 					for (Ghost ghost : Game.INSTANCE.getGhosts()) {
 						boolean[][] explored = ghost.getExploredPositions();
@@ -75,7 +75,7 @@ public enum Board {
 							break;
 						}
 					}
-					
+
 					if (!isExplored) {
 						sb.append("#");
 					}

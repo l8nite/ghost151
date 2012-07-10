@@ -21,25 +21,9 @@ public class ScoredBoardPosition extends BoardPosition {
 	public ScoredBoardPosition(int row, int column, int score) {
 		super(row, column);
 		this.score = score;
-		this.label = "";
 	}
 
 	private int score;
-	private String label;
-
-	/**
-	 * @return the label
-	 */
-	public String getLabel() {
-		return label;
-	}
-
-	/**
-	 * @param label the label to set
-	 */
-	public void setLabel(String label) {
-		this.label = label;
-	}
 
 	/**
 	 * @return the score
@@ -53,13 +37,5 @@ public class ScoredBoardPosition extends BoardPosition {
 	 */
 	public void setScore(int score) {
 		this.score = score;
-	}
-	
-	/**
-	 * 
-	 */
-	@Override
-	public String toString() {
-		return (label.isEmpty() ? "" : label + ": " ) + "(" + row + ", " + column + "): " + score;
 	}
 }

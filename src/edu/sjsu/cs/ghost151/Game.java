@@ -112,7 +112,7 @@ public enum Game {
 
 		while (isRunning) {
 			Update();
-			Render();
+			//Render();
 			++numberOfGameLoops;
 
 			// slow down the game loop so that rendering is human-speed
@@ -144,6 +144,8 @@ public enum Game {
 				}
 			}
 		}
+		
+		Render();
 
 		for (Ghost ghost : ghosts) {
 			ghost.Move();

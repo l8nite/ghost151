@@ -8,6 +8,7 @@ package edu.sjsu.cs.ghost151;
  *
  */
 public enum BoardDirection {
+	STAYPUT(0,0),
 	LEFT(-1,0),
 	RIGHT(1,0),
 	UP(0,-1),
@@ -15,8 +16,8 @@ public enum BoardDirection {
 	LEFTUP(-1,-1),
 	LEFTDOWN(-1,1),
 	RIGHTUP(1,-1),
-	RIGHTDOWN(1,1),
-	STAYPUT(0,0);
+	RIGHTDOWN(1,1)
+	;
 	
 	public static final int COLUMN_OFFSET_RIGHT = 1;
 	public static final int COLUMN_OFFSET_LEFT = -1;

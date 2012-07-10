@@ -88,4 +88,33 @@ public class BoardPosition implements Comparable<BoardPosition> {
 			return 1;
 		}
 	}
+	
+	/**
+	 * Determine a BoardDirection that gets us closer to this position from
+	 * the given position (given the constraints of the board (edges, etc)).
+	 * 
+	 * @param position
+	 *            the position we want to move from
+	 * @return the direction the ghost should move to get to the current position
+	 */
+	public BoardDirection DirectionFrom(BoardPosition position) {
+		BoardPosition targetPosition = this;
+
+		// and then move towards it
+		BoardDirection moveDirection = BoardDirection.STAYPUT;
+
+		if (targetPosition.getRow() > position.getRow()) {
+			moveDirection.setRowOffset(BoardDirection.ROW_OFFSET_DOWN);
+		} else if (targetPosition.getRow() < position.getRow()) {
+			moveDirection.setRowOffset(BoardDirection.ROW_OFFSET_UP);
+		}
+
+		if (targetPosition.getColumn() > position.getColumn()) {
+			moveDirection.setColumnOffset(BoardDirection.COLUMN_OFFSET_RIGHT);
+		} else if (targetPosition.getColumn() < position.getColumn()) {
+			moveDirection.setColumnOffset(BoardDirection.COLUMN_OFFSET_LEFT);
+		}
+
+		return moveDirection;
+	}
 }

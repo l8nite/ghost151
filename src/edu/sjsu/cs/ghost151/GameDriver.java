@@ -19,6 +19,13 @@ public class GameDriver {
 	 */
 	public static void main(String[] args) {
 		Game game = Game.INSTANCE;
-		game.Run(4); // TODO: get user input
+		int numberOfGhosts = 4;
+		try {
+			numberOfGhosts = Integer.valueOf(args[1]);
+		}
+		catch (Exception e) {
+		}
+
+		game.Run(numberOfGhosts);
 	}
 }
