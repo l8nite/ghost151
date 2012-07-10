@@ -59,7 +59,7 @@ public class Ghost extends BoardObject {
 	 * @param ghost
 	 *            the Ghost object to communicate with
 	 */
-	private void CommunicateWith(Ghost ghost) {
+	public void CommunicateWith(Ghost ghost) {
 		BoardObjectType[][] incoming = ghost.getExploredPositions();
 
 		for (int row = 0; row < incoming.length; ++row) {
@@ -70,6 +70,8 @@ public class Ghost extends BoardObject {
 				}
 			}
 		}
+		
+		DetermineNextMovePosition();
 	}
 
 	/**

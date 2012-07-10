@@ -135,8 +135,14 @@ public enum Game {
 			ghost.Scan();
 		}
 
-		for (Ghost ghost : ghosts) {
-			ghost.Communicate();
+		for (Ghost ghost1 : ghosts) {
+			for (Ghost ghost2 : ghosts) {
+				if (ghost1 != ghost2) {
+					ghost1.CommunicateWith(ghost2);
+					ghost2.CommunicateWith(ghost1);
+					IncrementCommunicationsCount();
+				}
+			}
 		}
 
 		for (Ghost ghost : ghosts) {
