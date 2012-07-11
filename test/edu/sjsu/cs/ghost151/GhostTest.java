@@ -4,6 +4,7 @@
 package edu.sjsu.cs.ghost151;
 
 import static org.junit.Assert.*;
+
 import org.junit.Test;
 
 /**
@@ -76,5 +77,4 @@ public class GhostTest {
 
 		assertTrue(ghost2ExploredPositions[0][0]);
 	}
-
 }

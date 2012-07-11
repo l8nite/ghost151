@@ -106,37 +106,4 @@ public class BoardTest {
 
 		assertEquals(boardObject, board.GetObjectAt(boardPosition));
 	}
-
-	/**
-	 * Test method for
-	 * {@link edu.sjsu.cs.ghost151.Board#GetSurroundings(edu.sjsu.cs.ghost151.BoardObject)}
-	 * .
-	 */
-	@Test
-	public void testGetSurroundings() {
-		board.Initialize();
-		
-		// surrounding position 1,1 with ghosts and walls, then check that's what we get back
-		board.SetObjectAt(new BoardPosition(1, 2), new BoardObject(BoardObjectType.Ghost));
-		board.SetObjectAt(new BoardPosition(2, 1), new BoardObject(BoardObjectType.Ghost));
-		board.SetObjectAt(new BoardPosition(2, 2), new BoardObject(BoardObjectType.Ghost));
-		
-		BoardObject target = new BoardObject(BoardObjectType.Target);
-		BoardPosition targetPosition = new BoardPosition(1, 1);
-		board.SetObjectAt(targetPosition, target);
-		
-		BoardObject[] surroundings = board.GetSurroundings(target);
-		
-		assertEquals(8, surroundings.length);
-		
-		for (int i = 0; i < 4; ++i)
-		{
-			assertEquals(BoardObjectType.Wall, surroundings[i].getType());
-		}
-		
-		assertEquals(BoardObjectType.Ghost, surroundings[4].getType());
-		assertEquals(BoardObjectType.Wall, surroundings[5].getType());
-		assertEquals(BoardObjectType.Ghost, surroundings[6].getType());
-		assertEquals(BoardObjectType.Ghost, surroundings[7].getType());
-	}
 }

@@ -173,7 +173,7 @@ public class Ghost extends BoardObject {
 	/**
 	 * Retrieves our surroundings on the Board
 	 */
-	public BoardObject[] GetSurroundings() {
+	private BoardObject[] GetSurroundings() {
 		ArrayList<BoardObject> surroundings = new ArrayList<BoardObject>();
 
 		BoardPosition center = position;
