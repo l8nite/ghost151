@@ -1,5 +1,6 @@
 package edu.sjsu.cs.ghost151;
 
+import java.util.ArrayList;
 import java.util.Random;
 
 /**
@@ -16,7 +17,6 @@ import java.util.Random;
 public class Ghost extends BoardObject {
 	private boolean exploredPositions[][];
 	private boolean targetAcquired = false;
-	private BoardObject[] surroundings = new BoardObject[0];
 	private Random generator;
 	private GhostMovementAlgorithm movementAlgorithm;
 	private BoardPosition goalMovePosition = null;
@@ -40,7 +40,7 @@ public class Ghost extends BoardObject {
 	 * Part of the Update() loop - update our exploredPositions matrix
 	 */
 	public void Scan() {
-		surroundings = board.GetSurroundings(this);
+		BoardObject[] surroundings = GetSurroundings();
 
 		for (BoardObject object : surroundings) {
 			MarkAsExplored(object.getPosition());
@@ -72,8 +72,6 @@ public class Ghost extends BoardObject {
 
 	/**
 	 * Part of the Update() loop - moves to the targeted position
-	 * 
-	 * @Precondition Requires Scan() to have updated the surroundings array
 	 */
 	public void Move() {
 		if (goalMovePosition == null) {
@@ -170,6 +168,28 @@ public class Ghost extends BoardObject {
 		}
 
 		return false;
+	}
+	
+	/**
+	 * Retrieves our surroundings on the Board
+	 */
+	public BoardObject[] GetSurroundings() {
+		ArrayList<BoardObject> surroundings = new ArrayList<BoardObject>();
+
+		BoardPosition center = position;
+
+		for (BoardDirection direction : BoardDirection.CompassDirections()) {
+			BoardObject object = board.GetObjectAt(direction.PositionFrom(center));
+
+			if (object != null) {
+				surroundings.add(object);
+			}
+		}
+
+		BoardObject[] surroundingsArray = new BoardObject[surroundings.size()];
+		surroundings.toArray(surroundingsArray);
+
+		return surroundingsArray;
 	}
 
 	/**

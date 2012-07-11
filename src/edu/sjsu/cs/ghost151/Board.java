@@ -1,19 +1,9 @@
 package edu.sjsu.cs.ghost151;
 
-import java.util.ArrayList;
-
 /**
- * <b>Board</b> provides the Grid for the simulation. Additionally, it will:
- * <ul>
- * <li>set the walls on the edges of the Board <ii>place an object at a given
- * position by calling BoardObject
- * <li>get the surroundings of a given position by calling BoardObject
- * </ul>
- * 
- * @author Alben Cheung
- * @author MD Ashfaqul Islam
- * @author Shaun Guth
- * @author Jerry Phul
+ * The Board class is a singleton which represents the environment for the
+ * simulation.  It provides operations for getting and setting the objects
+ * at particular @link{BoardPosition}s.
  */
 public enum Board {
 	INSTANCE; // singleton
@@ -77,13 +67,12 @@ public enum Board {
 								break;
 							}
 						}
-	
+
 						if (!isExplored) {
 							sb.append("#");
 						}
 					}
-				}
-				else {
+				} else {
 					sb.append(object.toString());
 				}
 			}
@@ -93,9 +82,10 @@ public enum Board {
 
 		return sb.toString();
 	}
-	
+
 	/**
 	 * Determine if this BoardObject can be "moved on" (by a ghost, for example)
+	 * 
 	 * @return true if the BoardObjectType is Empty or Target
 	 * @return false otherwise
 	 */
@@ -105,14 +95,13 @@ public enum Board {
 		if (type == BoardObjectType.Empty) {
 			return true;
 		}
-		
+
 		if (type == BoardObjectType.Target) {
 			return true;
 		}
-		
+
 		return false;
 	}
-
 
 	/**
 	 * Takes any object and assigns it to a position on the Board.
@@ -143,31 +132,6 @@ public enum Board {
 		} else {
 			return null;
 		}
-	}
-
-	/**
-	 * Retrieve the surrounding information for a given object on the Board.
-	 * 
-	 * @param boardObject
-	 *            The object to get surroundings of
-	 */
-	public BoardObject[] GetSurroundings(BoardObject boardObject) {
-		ArrayList<BoardObject> surroundings = new ArrayList<BoardObject>();
-
-		BoardPosition center = boardObject.getPosition();
-
-		for (BoardDirection direction : BoardDirection.CompassDirections()) {
-			BoardObject object = GetObjectAt(direction.PositionFrom(center));
-			
-			if (object != null) {
-				surroundings.add(object);
-			}
-		}
-
-		BoardObject[] surroundingsArray = new BoardObject[surroundings.size()];
-		surroundings.toArray(surroundingsArray);
-
-		return surroundingsArray;
 	}
 
 	/**
