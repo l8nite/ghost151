@@ -116,11 +116,11 @@ public class Ghost extends BoardObject {
 	 *            the object's new position
 	 */
 	private void MoveTo(BoardPosition newPosition) {
-		BoardObject targetObject = board.GetObjectAt(newPosition);
-
-		if (null == newPosition || !targetObject.IsValidMoveTarget()) {
+		if (null == newPosition || !board.IsValidMoveTarget(newPosition)) {
 			return;
 		}
+		
+		BoardObject targetObject = board.GetObjectAt(newPosition);
 
 		// check if we're acquiring the target
 		if (targetObject.getType() == BoardObjectType.Target) {
@@ -165,7 +165,7 @@ public class Ghost extends BoardObject {
 	private boolean AbleToMoveDirection(BoardDirection direction) {
 		BoardPosition position = direction.PositionFrom(this.position);
 
-		if (board.GetObjectAt(position).IsValidMoveTarget()) {
+		if (board.IsValidMoveTarget(position)) {
 			return true;
 		}
 

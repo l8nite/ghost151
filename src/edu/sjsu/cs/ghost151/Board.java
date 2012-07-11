@@ -93,6 +93,26 @@ public enum Board {
 
 		return sb.toString();
 	}
+	
+	/**
+	 * Determine if this BoardObject can be "moved on" (by a ghost, for example)
+	 * @return true if the BoardObjectType is Empty or Target
+	 * @return false otherwise
+	 */
+	public boolean IsValidMoveTarget(BoardPosition position) {
+		BoardObjectType type = GetObjectAt(position).getType();
+
+		if (type == BoardObjectType.Empty) {
+			return true;
+		}
+		
+		if (type == BoardObjectType.Target) {
+			return true;
+		}
+		
+		return false;
+	}
+
 
 	/**
 	 * Takes any object and assigns it to a position on the Board.
