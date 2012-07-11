@@ -1,27 +1,40 @@
 package edu.sjsu.cs.ghost151;
 
 /**
- * The Board class is a singleton which represents the environment for the
- * simulation.  It provides operations for getting and setting the objects
- * at particular @link{BoardPosition}s.
+ * The <b>Board</b> class is a singleton which represents the environment for
+ * the simulation. It provides operations for getting and setting the objects at
+ * a particular {@link edu.sjsu.cs.ghost151.BoardPosition}.
  */
 public enum Board {
-	INSTANCE; // singleton
+	/**
+	 * Board is a singleton, use Board.INSTANCE to get the instance.
+	 */
+	INSTANCE;
 
+	/**
+	 * The number of rows this board contains
+	 */
 	public static final int ROWS = 10;
+
+	/**
+	 * The number of columns this board contains.
+	 */
 	public static final int COLUMNS = 20;
 
 	private BoardObject grid[][];
+	private BoardRenderer renderer;
 
 	/**
-	 * Constructs the default Board object.
+	 * Constructs and Initializes the Board
 	 */
 	private Board() {
 		Initialize();
+		renderer = new StandardBoardRenderer();
 	}
 
 	/**
-	 * Initializes empty board, sets the walls to the outer edges
+	 * Places Wall BoardObjects at the edges of the board and Empty BoardObjects
+	 * in the interior
 	 */
 	public void Initialize() {
 		grid = new BoardObject[ROWS][COLUMNS];
@@ -42,45 +55,24 @@ public enum Board {
 	}
 
 	/**
-	 * Convert to string.
+	 * Renders the board as an ASCII diagram:
+	 * (Here, there are two Ghosts and one Target on the board).
+	 * <pre>
+	 * ++++++++++++++++++++
+	 * +                  +
+	 * +         &        +
+	 * +                  +
+	 * +           &      +
+	 * +                  +
+	 * +                  +
+	 * +  @               +
+	 * +                  +
+	 * ++++++++++++++++++++
+	 * </pre>
 	 */
 	@Override
 	public String toString() {
-		StringBuilder sb = new StringBuilder();
-
-		for (int row = 0; row < ROWS; ++row) {
-			for (int column = 0; column < COLUMNS; ++column) {
-				BoardObject object = grid[row][column];
-
-				boolean GHOSTVISION = false;
-				if (GHOSTVISION) {
-					if (object.getType() == BoardObjectType.Target
-							|| object.getType() == BoardObjectType.Ghost) {
-						sb.append(object.toString());
-					} else {
-						boolean isExplored = false;
-						for (Ghost ghost : Game.INSTANCE.getGhosts()) {
-							boolean[][] explored = ghost.getExploredPositions();
-							if (explored[row][column] != false) {
-								sb.append(object.toString());
-								isExplored = true;
-								break;
-							}
-						}
-
-						if (!isExplored) {
-							sb.append("#");
-						}
-					}
-				} else {
-					sb.append(object.toString());
-				}
-			}
-
-			sb.append("\n");
-		}
-
-		return sb.toString();
+		return renderer.render(this);
 	}
 
 	/**
@@ -141,5 +133,19 @@ public enum Board {
 	 */
 	public BoardObject[][] getGrid() {
 		return grid;
+	}
+
+	/**
+	 * @return the renderer
+	 */
+	public BoardRenderer getRenderer() {
+		return renderer;
+	}
+
+	/**
+	 * @param renderer the renderer to set
+	 */
+	public void setRenderer(BoardRenderer renderer) {
+		this.renderer = renderer;
 	}
 }
