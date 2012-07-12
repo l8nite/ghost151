@@ -30,7 +30,7 @@ public class GameTest {
 	}
 
 	/**
-	 * Test method for {@link edu.sjsu.cs.ghost151.Game#ConfigureBoard()}.
+	 * Test method for {@link edu.sjsu.cs.ghost151.Game#ConfigureBoard(int numberOfGhosts, Random generator)}.
 	 */
 	@Test
 	public void testConfigureBoard() {

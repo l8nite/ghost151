@@ -1,13 +1,8 @@
 package edu.sjsu.cs.ghost151;
 
 /**
- * <b>BoardPosition</b> keeps track and informs of row and column information
- * per object placed on the Board.
- * 
- * @author Alben Cheung
- * @author MD Ashfaqul Islam
- * @author Shaun Guth
- * @author Jerry Phul
+ * <b>BoardPosition</b> is a simple utility class storing row/column coordinates
+ * on the Board.
  */
 public class BoardPosition {
 	protected int row;
@@ -73,7 +68,13 @@ public class BoardPosition {
 	}
 
 	/**
-	 * Compares two positions to see if they're the same
+	 * Compares two BoardPositions to see if they're referencing the same
+	 * coordinates
+	 * 
+	 * @param that
+	 *            The object to compare with
+	 * @return true if both BoardPositions have the same row/column, false
+	 *         otherwise
 	 */
 	@Override
 	public boolean equals(Object that) {

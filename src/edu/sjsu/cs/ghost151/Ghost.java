@@ -4,40 +4,45 @@ import java.util.ArrayList;
 import java.util.Random;
 
 /**
- * <b>Ghost</b> will communicate with other Ghosts to acquire a target and be
- * aware of areas already visited by each other. The Ghost will search for the
- * target (PacMan) and maintain a log of areas visited. If the target is
- * acquired, it will notify the Game.
- * 
- * @author Alben Cheung
- * @author MD Ashfaqul Islam
- * @author Shaun Guth
- * @author Jerry Phul
+ * The <b>Ghost</b> is a specialized BoardObject that has the ability to look at
+ * its surroundings, communicate with other ghosts, and move around the board.
  */
 public class Ghost extends BoardObject {
+	private GhostMovementAlgorithm movementAlgorithm;
+	private BoardPosition goalMovePosition = null;
 	private boolean exploredPositions[][];
 	private boolean targetAcquired = false;
 	private Random generator;
-	private GhostMovementAlgorithm movementAlgorithm;
-	private BoardPosition goalMovePosition = null;
 
 	/**
-	 * Construct a Ghost object that is aware of positions its explored.
+	 * Constructs a new Ghost with a new random number generator
 	 */
 	public Ghost() {
 		this(new Random());
 	}
 
+	/**
+	 * Constructs a new Ghost with the given random number generator and
+	 * initializes the exploredPositions array
+	 * 
+	 * By default, a Ghost uses the LINEAR GhostMovementAlgorithmType
+	 * 
+	 * @param generator
+	 *            The Random generator to use
+	 */
 	public Ghost(Random generator) {
 		super(BoardObjectType.Ghost);
+
 		this.generator = generator;
+
 		exploredPositions = new boolean[Board.ROWS][Board.COLUMNS];
 
 		movementAlgorithm = GhostMovementAlgorithmType.LINEAR.CreateInstance();
 	}
 
 	/**
-	 * Part of the Update() loop - update our exploredPositions matrix
+	 * Part of the Update() loop - update our exploredPositions matrix based on
+	 * our surroundings
 	 */
 	public void Scan() {
 		BoardObject[] surroundings = GetSurroundings();
@@ -52,10 +57,11 @@ public class Ghost extends BoardObject {
 	}
 
 	/**
-	 * Synchronize places explored between Ghost objects.
+	 * One-way communication between two Ghosts. "Downloads" the information
+	 * from the given Ghost
 	 * 
 	 * @param ghost
-	 *            the Ghost object to communicate with
+	 *            the Ghost object to get information from
 	 */
 	public void CommunicateWith(Ghost ghost) {
 		boolean[][] incoming = ghost.getExploredPositions();
@@ -71,7 +77,8 @@ public class Ghost extends BoardObject {
 	}
 
 	/**
-	 * Part of the Update() loop - moves to the targeted position
+	 * Part of the Update() loop - moves towards the goalMovePosition (which is
+	 * determined by the movementAlgorithm)
 	 */
 	public void Move() {
 		if (goalMovePosition == null) {
@@ -108,7 +115,8 @@ public class Ghost extends BoardObject {
 	}
 
 	/**
-	 * Move an object from it's current position to a new position.
+	 * Moves to the specified position, checks if we're acquiring the target and
+	 * increments the game movement count statistics
 	 * 
 	 * @param newPosition
 	 *            the object's new position
@@ -117,7 +125,7 @@ public class Ghost extends BoardObject {
 		if (null == newPosition || !board.IsValidMoveTarget(newPosition)) {
 			return;
 		}
-		
+
 		BoardObject targetObject = board.GetObjectAt(newPosition);
 
 		// check if we're acquiring the target
@@ -133,9 +141,9 @@ public class Ghost extends BoardObject {
 	}
 
 	/**
-	 * returns a boolean value if the target was acquired by the object.
+	 * Have we acquired the target?
 	 * 
-	 * @return boolean value
+	 * @return true if the target has been acquired, false otherwise
 	 */
 	public boolean IsTargetAcquired() {
 		return targetAcquired;
@@ -157,8 +165,7 @@ public class Ghost extends BoardObject {
 	 * 
 	 * @param direction
 	 *            the direction we want to know about
-	 * @return true if we're able to move in that direction
-	 * @return false otherwise
+	 * @return true if we're able to move in that direction, false otherwise
 	 */
 	private boolean AbleToMoveDirection(BoardDirection direction) {
 		BoardPosition position = direction.PositionFrom(this.position);
@@ -169,9 +176,11 @@ public class Ghost extends BoardObject {
 
 		return false;
 	}
-	
+
 	/**
 	 * Retrieves our surroundings on the Board
+	 * 
+	 * @return an array of BoardObject for the positions around us.
 	 */
 	private BoardObject[] GetSurroundings() {
 		ArrayList<BoardObject> surroundings = new ArrayList<BoardObject>();
@@ -179,7 +188,8 @@ public class Ghost extends BoardObject {
 		BoardPosition center = position;
 
 		for (BoardDirection direction : BoardDirection.CompassDirections()) {
-			BoardObject object = board.GetObjectAt(direction.PositionFrom(center));
+			BoardObject object = board.GetObjectAt(direction
+					.PositionFrom(center));
 
 			if (object != null) {
 				surroundings.add(object);
@@ -214,15 +224,19 @@ public class Ghost extends BoardObject {
 	}
 
 	/**
-	 * @return the movementAlgorithm
+	 * Gets the movement algorithm this ghost is using
+	 * 
+	 * @return the movementAlgorithm being used by this ghost
 	 */
 	public GhostMovementAlgorithm getMovementAlgorithm() {
 		return movementAlgorithm;
 	}
 
 	/**
+	 * Sets the movement algorithm for this ghost to use
+	 * 
 	 * @param movementAlgorithm
-	 *            the movementAlgorithm to set
+	 *            the movementAlgorithm to set for this ghost
 	 */
 	public void setMovementAlgorithm(GhostMovementAlgorithm movementAlgorithm) {
 		this.movementAlgorithm = movementAlgorithm;

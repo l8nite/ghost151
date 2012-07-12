@@ -1,14 +1,10 @@
 package edu.sjsu.cs.ghost151;
 
 /**
- * <b>BoardObject</b> determines the type of object placed in the Board and
- * notifies the Board object. It will also get and set an object's position on
- * the board.
+ * A <b>BoardObject</b> is the basic unit stored within the Board.
  * 
- * @author Alben Cheung
- * @author MD Ashfaqul Islam
- * @author Shaun Guth
- * @author Jerry Phul
+ * It stores information about its type and position and provides a mechanism
+ * for retrieving its String representation
  */
 public class BoardObject {
 
@@ -26,13 +22,10 @@ public class BoardObject {
 		board = Board.INSTANCE;
 		setType(type);
 	}
-	
+
 	/**
-	 * Return the position of the object.
+	 * Return the position of the board object.
 	 * 
-	 * @return the position
-	 */
-	/**
 	 * @return the position
 	 */
 	public BoardPosition getPosition() {
@@ -59,7 +52,7 @@ public class BoardObject {
 	}
 
 	/**
-	 * Set the type of the current board object.
+	 * Set the type of the board object.
 	 * 
 	 * @param type
 	 *            the type to set

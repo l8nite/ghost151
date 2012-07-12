@@ -1,6 +1,3 @@
-/**
- * 
- */
 package edu.sjsu.cs.ghost151;
 
 import java.util.ArrayList;
@@ -8,8 +5,10 @@ import java.util.HashMap;
 import java.util.Random;
 
 /**
- * @author shaung
- * 
+ * The <b>LinearGhostMovementAlgorithm</b> scans linearly outward in all 8
+ * directions from the Ghost and determines the nearest unexplored space in
+ * those directions. If all spaces are explored, falls back to the
+ * RandomGhostMovementAlgorithm. Ties are resolved randomly.
  */
 public class LinearGhostMovementAlgorithm implements GhostMovementAlgorithm {
 
@@ -27,6 +26,11 @@ public class LinearGhostMovementAlgorithm implements GhostMovementAlgorithm {
 	 * unexplored space in a given direction.
 	 * 
 	 * Falls back to the RandomGhostMovementAlgorithm if it can't find one
+	 * 
+	 * @param ghost
+	 *            The ghost to determine the next goal position for.
+	 * @param generator
+	 *            The random number generator to use
 	 * 
 	 * @return a position that we want to move towards
 	 */
@@ -46,7 +50,7 @@ public class LinearGhostMovementAlgorithm implements GhostMovementAlgorithm {
 
 		for (BoardDirection direction : compassDirections) {
 			ScoredBoardPosition scoredPosition = LinearCountExploredPositions(
-					ghost, direction, targetPosition);
+					ghost, direction);
 			scores.put(direction, scoredPosition);
 
 			int score = scoredPosition.getScore();
@@ -75,15 +79,20 @@ public class LinearGhostMovementAlgorithm implements GhostMovementAlgorithm {
 	 * Count the number of unexplored positions in a straight direction from our
 	 * position
 	 * 
+	 * @param ghost
+	 *            The ghost to count for
 	 * @param direction
 	 *            The direction to count
+	 * 
 	 * @return A "scored" BoardPosition where the score is the number of
 	 *         explored spaces that would be traversed before reaching an
 	 *         unexplored space. The score is -1 if there are no unexplored
 	 *         spaces in the given direction
 	 */
 	private ScoredBoardPosition LinearCountExploredPositions(Ghost ghost,
-			BoardDirection direction, BoardPosition position) {
+			BoardDirection direction) {
+		BoardPosition position = ghost.getPosition();
+
 		int row = position.getRow();
 		int column = position.getColumn();
 

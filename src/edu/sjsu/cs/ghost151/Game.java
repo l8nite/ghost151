@@ -1,39 +1,62 @@
 package edu.sjsu.cs.ghost151;
 
+import java.util.ArrayList;
 import java.util.Random;
 
 /**
- * <b>Game</b> will:
+ * The <b>Game</b> class contains the core logic for our simulation.
+ * 
+ * It has three states: Initializing, Running, Finishing
+ * 
+ * During Initialization, the Game will:
  * <ul>
- * <li>Configure the board
- * <li>Configure ghosts
- * <li>Configure the target
- * <li>Update the game
- * <li>Render the game
- * <li>Run the number of ghosts
- * <li>Print statistics at conclusion of game
+ * <li>Configure the board</li>
+ * <li>Configure ghosts</li>
+ * <li>Configure the target</li>
  * </ul>
  * 
- * @author Alben Cheung
- * @author MD Ashfaqul Islam
- * @author Shaun Guth
- * @author Jerry Phul
+ * After a call to Run(), the Game will enter Running state, which loops
+ * repeatedly until a Ghost reports that the target is acquired.
+ * 
+ * One loop will:
+ * <ul>
+ * <li>Instruct Ghosts to Move</li>
+ * <li>Instruct Ghosts to Scan</li>
+ * <li>Instruct Ghosts to Communicate</li>
+ * <li>Render the Board</li>
+ * </ul>
+ * 
+ * After the target is acquired, the Game will enter the Finishing state, where
+ * it will:
+ * <ul>
+ * <li>Print the game statistics</li>
+ * <li>Exit the game</li>
+ * </ul>
  */
 public enum Game {
 	INSTANCE; // singleton
 
-	private int numberOfCommunications;
 	private int numberOfGhosts;
+
+	// statistics
+	private int numberOfCommunications;
 	private int numberOfGameLoops;
 	private int numberOfMovements;
 
 	private Ghost ghosts[];
 	private Board board;
+
 	private boolean isRunning;
 
 	/**
-	 * <b>ConfigureBoard</b> will configure the number of defined or user
-	 * entered ghosts and place them on the Board object.
+	 * Initializes the main game board, creates the specified number of Ghosts
+	 * and places them on the board, and also creates and places the target.
+	 * 
+	 * @param numberOfGhosts
+	 *            The number of ghosts to place on the board
+	 * @param generator
+	 *            A Random generator used for placing the ghosts/target on the
+	 *            board
 	 */
 	public void ConfigureBoard(int numberOfGhosts, Random generator) {
 		board = Board.INSTANCE;
@@ -44,59 +67,65 @@ public enum Game {
 		numberOfMovements = 0;
 		numberOfGameLoops = 0;
 
-		ConfigureGhosts(generator);
 		ConfigureTarget(generator);
+		ConfigureGhosts(generator);
 	}
 
 	/**
-	 * <b>ConfigureGhosts</b> will create the Ghost objects and place them at
-	 * random positions on the Board object.
+	 * Create the Ghost objects and place them at random positions on the board
+	 * 
+	 * @param generator
+	 *            The Random generator to use for placing the ghosts
 	 */
 	private void ConfigureGhosts(Random generator) {
 		ghosts = new Ghost[numberOfGhosts];
 
+		ArrayList<BoardObject> empties = new ArrayList<BoardObject>();
+
+		for (BoardObject[] row : board.getGrid()) {
+			for (BoardObject object : row) {
+				if (object.getType() == BoardObjectType.Empty) {
+					empties.add(object);
+				}
+			}
+		}
+
 		for (int i = 0; i < numberOfGhosts; ++i) {
 			ghosts[i] = new Ghost();
 
-			// we always know that position 0,0 won't be empty (it's a wall)
-			BoardPosition position = new BoardPosition(0, 0);
+			BoardObject empty = empties.get(generator.nextInt(empties.size()));
+			empties.remove(empty);
 
-			while (board.GetObjectAt(position).getType() != BoardObjectType.Empty) {
-				// pick a random position on the board for this ghost, avoid the
-				// walls
-				position.setRow(generator.nextInt(Board.ROWS - 2) + 1);
-				position.setColumn(generator.nextInt(Board.COLUMNS - 2) + 1);
-			}
-
-			board.SetObjectAt(position, ghosts[i]);
+			board.SetObjectAt(empty.getPosition(), ghosts[i]);
 		}
 	}
 
 	/**
-	 * <b>ConfigureTarget</b> move the Pacman object to a new random location.
+	 * Puts a new Target object on the board
 	 */
 	private void ConfigureTarget(Random generator) {
-		// we always know that position 0,0 won't be empty (it's a wall)
-		BoardPosition position = new BoardPosition(0, 0);
+		ArrayList<BoardObject> empties = new ArrayList<BoardObject>();
 
-		while (board.GetObjectAt(position).getType() != BoardObjectType.Empty) {
-			// pick a random position on the board, avoid the walls
-			position.setRow(generator.nextInt(Board.ROWS - 2) + 1);
-			position.setColumn(generator.nextInt(Board.COLUMNS - 2) + 1);
+		for (BoardObject[] row : board.getGrid()) {
+			for (BoardObject object : row) {
+				if (object.getType() == BoardObjectType.Empty) {
+					empties.add(object);
+				}
+			}
 		}
 
-		BoardObject target = new BoardObject(BoardObjectType.Target);
+		BoardObject empty = empties.get(generator.nextInt(empties.size()));
+		empties.remove(empty);
 
-		board.SetObjectAt(position, target);
+		BoardObject target = new BoardObject(BoardObjectType.Target);
+		board.SetObjectAt(empty.getPosition(), target);
 	}
 
 	/**
-	 * <b>Run</b> takes the number of Ghost objects to create and configures the
-	 * board for simulation. At conclusion of simulation, the print statistics
-	 * method will be called to display the results.
+	 * Runs the simulation with the given number of ghosts
 	 * 
 	 * @param numberOfGhosts
-	 *            number of Ghost objects to start the game with.
+	 *            number of ghosts that will work to find the target
 	 */
 	public void Run(int numberOfGhosts) {
 		Random generator = new Random();
@@ -105,6 +134,7 @@ public enum Game {
 		isRunning = true;
 
 		Render();
+
 		try {
 			Thread.sleep(1000);
 		} catch (InterruptedException interruptedException) {
@@ -112,7 +142,7 @@ public enum Game {
 
 		while (isRunning) {
 			Update();
-			//Render();
+			Render();
 			++numberOfGameLoops;
 
 			// slow down the game loop so that rendering is human-speed
@@ -126,11 +156,20 @@ public enum Game {
 	}
 
 	/**
-	 * <b>Update</b> will request from each Ghost object if the target (PacMan)
-	 * has been acquired. If so, set <i>isRunning</i> to false so the Game loop
-	 * may end.
+	 * Let the ghosts move, scan their surroundings, and communicate. If any
+	 * ghost finds the target, return right away and set a flag so that we can
+	 * terminate
 	 */
 	public void Update() {
+		for (Ghost ghost : ghosts) {
+			ghost.Move();
+
+			if (ghost.IsTargetAcquired()) {
+				isRunning = false;
+				return;
+			}
+		}
+
 		for (Ghost ghost : ghosts) {
 			ghost.Scan();
 		}
@@ -144,37 +183,26 @@ public enum Game {
 				}
 			}
 		}
-		
-		Render();
-
-		for (Ghost ghost : ghosts) {
-			ghost.Move();
-
-			if (ghost.IsTargetAcquired()) {
-				isRunning = false;
-				return;
-			}
-		}
-
 	}
-	
+
+	/**
+	 * End the simulation at the end of the next Update() loop
+	 */
 	public void Terminate() {
 		isRunning = false;
 	}
 
 	/**
-	 * <b>Render</b> takes the board object, converts it to a string so that it
-	 * may be printed on standard out.
+	 * Draws the board to stdout
 	 */
 	public void Render() {
 		System.out.print(board.toString());
 	}
 
 	/**
-	 * <b>GetStatistics</b> returns a string representing the final game
-	 * statistics.
+	 * Gets a string representing the final game statistics.
 	 * 
-	 * @return the string to print for statistics
+	 * @return The statistics in a formatted string
 	 */
 	public String GetStatistics() {
 		return "Number of game loops: " + numberOfGameLoops + "\n"
@@ -183,54 +211,50 @@ public enum Game {
 	}
 
 	/**
-	 * <b>IncrementCommunicationsCount</b> takes statistics on the number of
-	 * Communications completed by all Ghost objects.
+	 * Increments the communication counter
 	 */
 	public void IncrementCommunicationsCount() {
 		++numberOfCommunications;
 	}
 
 	/**
-	 * <b>IncrementMovementCount</b> takes statistics on the number of movements
-	 * completed by all Ghost objects.
+	 * Increments the movement counter
 	 */
 	public void IncrementMovementCount() {
 		++numberOfMovements;
 	}
 
 	/**
-	 * <b>getNumberOfCommunications</b> the number of communications completed
-	 * by all Ghost objects.
+	 * Gets the number of communications
 	 * 
-	 * @return total number of communications.
+	 * @return The communication count
 	 */
 	public int getNumberOfCommunications() {
 		return numberOfCommunications;
 	}
 
 	/**
-	 * <b>getNumberOfMovements</b> the number of movements completed by all
-	 * Ghost objects.
+	 * Gets the number of movements
 	 * 
-	 * @return total number of movements.
+	 * @return The movement count
 	 */
 	public int getNumberOfMovements() {
 		return numberOfMovements;
 	}
 
 	/**
-	 * <b>getNumberOfGameLoops</b> the number of game loops completed
+	 * Gets the number of game loops completed
 	 * 
-	 * @return total number of game loops
+	 * @return The game loop counter
 	 */
 	public int getNumberOfGameLoops() {
 		return numberOfGameLoops;
 	}
 
 	/**
-	 * <b>getGhosts</b> return the Ghost object.
+	 * Get the ghosts being used currently
 	 * 
-	 * @return the Ghost
+	 * @return The Ghosts currently being used in this simulation
 	 */
 	public Ghost[] getGhosts() {
 		return ghosts;

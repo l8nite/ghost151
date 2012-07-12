@@ -1,17 +1,13 @@
-/**
- * 
- */
 package edu.sjsu.cs.ghost151;
 
 import java.util.ArrayList;
 import java.util.Random;
 
 /**
- * @author shaung
- * 
+ * The <b>NearestGhostMovementAlgorithm</b> chooses the nearest unexplored space
+ * to the Ghost and moves toward it. Ties are resolved randomly.
  */
-public class NearestGhostMovementAlgorithm implements
-		GhostMovementAlgorithm {
+public class NearestGhostMovementAlgorithm implements GhostMovementAlgorithm {
 
 	/**
 	 * See @link{edu.sjsu.cs.ghost151.LinearGhostMovementAlgorithm#
@@ -25,6 +21,10 @@ public class NearestGhostMovementAlgorithm implements
 	/**
 	 * Determines the nearest unexplored space on the grid and returns it.
 	 * 
+	 * @param ghost
+	 *            The ghost to determine the next move for
+	 * @param generator
+	 *            Random generator to use
 	 * @return a position that we want to move towards
 	 */
 	@Override

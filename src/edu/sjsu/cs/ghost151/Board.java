@@ -55,8 +55,9 @@ public enum Board {
 	}
 
 	/**
-	 * Renders the board as an ASCII diagram:
-	 * (Here, there are two Ghosts and one Target on the board).
+	 * Renders the board as an ASCII diagram: (Here, there are two Ghosts and
+	 * one Target on the board).
+	 * 
 	 * <pre>
 	 * ++++++++++++++++++++
 	 * +                  +
@@ -76,9 +77,12 @@ public enum Board {
 	}
 
 	/**
-	 * Determine if this BoardObject can be "moved on" (by a ghost, for example)
+	 * Determine if the BoardObject at the given BoardPosition can be "moved on"
+	 * (by a ghost, for example)
 	 * 
-	 * @return true if the BoardObjectType is Empty or Target
+	 * @param position
+	 *            The BoardPosition to check
+	 * @return true if the BoardObjectType at that position is Empty or Target
 	 * @return false otherwise
 	 */
 	public boolean IsValidMoveTarget(BoardPosition position) {
@@ -113,6 +117,7 @@ public enum Board {
 	 * 
 	 * @param boardPosition
 	 *            the board position to get object from
+	 * @return the object at that position or null if position is out of range
 	 */
 	public BoardObject GetObjectAt(BoardPosition boardPosition) {
 		int row = boardPosition.getRow();
@@ -136,14 +141,15 @@ public enum Board {
 	}
 
 	/**
-	 * @return the renderer
+	 * @return the renderer this Board is using
 	 */
 	public BoardRenderer getRenderer() {
 		return renderer;
 	}
 
 	/**
-	 * @param renderer the renderer to set
+	 * @param renderer
+	 *            the renderer this Board should use
 	 */
 	public void setRenderer(BoardRenderer renderer) {
 		this.renderer = renderer;

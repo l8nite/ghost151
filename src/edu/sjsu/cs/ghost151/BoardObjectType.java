@@ -1,14 +1,9 @@
 package edu.sjsu.cs.ghost151;
 
 /**
- * <b>BoardObjectType</b> responsible for keeping track of surroundings of an
- * object and notifying the Board object. Typical surrounding objects to be
- * found are empty spaces, Wall, PacMan, and Ghosts.
- * 
- * @author Alben Cheung
- * @author MD Ashfaqul Islam
- * @author Shaun Guth
- * @author Jerry Phul
+ * <b>BoardObjectType</b> is an enumeration of the potential kinds of objects
+ * that may be stored on a Board grid. These include empty spaces, targets,
+ * walls, and ghosts.
  */
 public enum BoardObjectType {
 	Empty(" "), Target("@"), Wall("+"), Ghost("&");
@@ -16,10 +11,10 @@ public enum BoardObjectType {
 	private final String representation;
 
 	/**
-	 * Establish a text representation of the object on the Board.
+	 * Create a new BoardObjectType with the given representation.
 	 * 
 	 * @param representation
-	 *            the representation to use
+	 *            the single-character representation to use
 	 */
 	private BoardObjectType(String representation) {
 		this.representation = representation;

@@ -16,7 +16,7 @@ import org.junit.Test;
 public class GhostTest {
 
 	/**
-	 * Test method for {@link edu.sjsu.cs.ghost151.Ghost#isTargetAcquired()} .
+	 * Test method for {@link edu.sjsu.cs.ghost151.Ghost#IsTargetAcquired()} .
 	 */
 	@Test
 	public void testGhostTargetAcquisition() {
