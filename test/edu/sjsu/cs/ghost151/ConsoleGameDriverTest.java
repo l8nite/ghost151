@@ -4,24 +4,24 @@ import static org.junit.Assert.*;
 
 import org.junit.Test;
 
-public class GameDriverTest {
+public class ConsoleGameDriverTest {
 
 	@Test
 	public void test() {
-		GameDriver g = new GameDriver();
+		ConsoleGameDriver g = new ConsoleGameDriver();
 		assertNotNull(g);
 
-		String[] args = {"GameDriverTest", "-5"};
-		GameDriver.main(args);
+		String[] args = {"ConsoleGameDriverTest", "-5"};
+		ConsoleGameDriver.main(args);
 		assertEquals(0, Game.INSTANCE.getNumberOfGameLoops());
 		
 		args[1] = "200";
-		GameDriver.main(args);
+		ConsoleGameDriver.main(args);
 		assertEquals(0, Game.INSTANCE.getNumberOfGameLoops());
 	
 		args[1] = null;
 		Game.INSTANCE.getBoard().setRenderer(new InvisibleBoardRenderer());
-		GameDriver.main(args);
+		ConsoleGameDriver.main(args);
 		assertTrue(Game.INSTANCE.getNumberOfGameLoops() > 0);
 	}
 
