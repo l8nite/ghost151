@@ -26,7 +26,19 @@ public class GameTest {
 	@Before
 	public void setUp() throws Exception {
 		game = Game.INSTANCE;
-		board = Board.INSTANCE;
+		board = game.getBoard();
+	}
+	
+	@Test
+	public void testRun() {
+		Thread.currentThread().interrupt();
+		game.getBoard().setRenderer(new InvisibleBoardRenderer());
+		game.Run(4);
+	}
+	
+	@Test
+	public void testSingleton() {
+		assertEquals(Game.INSTANCE, Game.valueOf("INSTANCE"));
 	}
 
 	/**
@@ -37,14 +49,13 @@ public class GameTest {
 		Random generator = new Random(42);
 
 		game.ConfigureBoard(1, generator);
-
-		// test that the ghost made it to the right spot
-		BoardPosition ghostPosition = new BoardPosition(6, 4);
+	
+		BoardPosition ghostPosition = board.BoardPosition(4, 7);
 		assertEquals(BoardObjectType.Ghost, board.GetObjectAt(ghostPosition)
 				.getType());
 
 		// test that the target made it to the right spot
-		BoardPosition targetPosition = new BoardPosition(6, 9);
+		BoardPosition targetPosition = board.BoardPosition(2, 9);
 		assertEquals(BoardObjectType.Target, board.GetObjectAt(targetPosition)
 				.getType());
 
@@ -59,8 +70,8 @@ public class GameTest {
 
 		BoardObject[][] grid = board.getGrid();
 
-		for (int row = 0; row < Board.ROWS; ++row) {
-			for (int column = 0; column < Board.COLUMNS; ++column) {
+		for (int row = 0; row < board.ROWS; ++row) {
+			for (int column = 0; column < board.COLUMNS; ++column) {
 				BoardObjectType type = grid[row][column].getType();
 				Integer count = actualObjectTypeCounts.get(type);
 				if (count == null) {
@@ -83,21 +94,21 @@ public class GameTest {
 	public void testUpdate() {
 		// set the board up in a particular way and run one Update() loop
 		// see that all ghosts have moved/communicated/acquired the pac-man
-		Random generator = new Random(20);
+		Random generator = new Random(35);
 		board.Initialize();
 		game.ConfigureBoard(4, generator);
-
+		
 		game.Update();
-
+		
 		Ghost[] ghosts = game.getGhosts();
 
-		assertEquals(true, ghosts[3].IsTargetAcquired());
+		assertEquals(false, ghosts[3].IsTargetAcquired());
 		assertEquals(false, ghosts[2].IsTargetAcquired());
 		assertEquals(false, ghosts[1].IsTargetAcquired());
-		assertEquals(false, ghosts[0].IsTargetAcquired());
+		assertEquals(true, ghosts[0].IsTargetAcquired());
 
-		assertEquals(12, game.getNumberOfCommunications());
-		assertEquals(4, game.getNumberOfMovements());
+		assertEquals(0, game.getNumberOfCommunications());
+		assertEquals(1, game.getNumberOfMovements());
 	}
 
 	/**

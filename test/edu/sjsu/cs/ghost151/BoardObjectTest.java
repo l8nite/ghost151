@@ -25,7 +25,8 @@ public class BoardObjectTest {
 		BoardObject object = new BoardObject(BoardObjectType.Ghost);
 		assertNull(object.getPosition());
 
-		BoardPosition position = new BoardPosition(10, 2);
+		Board board = new Board(3,3);
+		BoardPosition position = board.BoardPosition(1, 1);
 		object.setPosition(position);
 		assertEquals(position, object.getPosition());
 

@@ -8,17 +8,20 @@ public class BoardPosition {
 	protected int row;
 	protected int column;
 
+	protected Board board;
+
 	/**
-	 * Holds the board position of the object.
+	 * Holds the board position of the object for the given board
 	 * 
 	 * @param row
 	 *            the row position
 	 * @param column
 	 *            the column position
 	 */
-	public BoardPosition(int row, int column) {
-		this.row = row;
-		this.column = column;
+	public BoardPosition(int row, int column, Board board) {
+		this.board = board;
+		setRow(row);
+		setColumn(column);
 	}
 
 	/**
@@ -36,7 +39,11 @@ public class BoardPosition {
 	 * @param row
 	 *            the row to set
 	 */
-	public void setRow(int row) {
+	public void setRow(int row) throws IndexOutOfBoundsException {
+		if (row >= board.ROWS || row < 0) {
+			throw new IndexOutOfBoundsException();
+		}
+
 		this.row = row;
 	}
 
@@ -55,7 +62,11 @@ public class BoardPosition {
 	 * @param column
 	 *            the column to set
 	 */
-	public void setColumn(int column) {
+	public void setColumn(int column) throws IndexOutOfBoundsException {
+		if (column >= board.COLUMNS || column < 0) {
+			throw new IndexOutOfBoundsException();
+		}
+
 		this.column = column;
 	}
 
@@ -87,8 +98,7 @@ public class BoardPosition {
 
 		BoardPosition position = (BoardPosition) that;
 
-		return position.getRow() == this.row
-				&& position.getColumn() == this.column;
+		return (position.getRow() == this.row && position.getColumn() == this.column);
 	}
 
 	/**
@@ -103,7 +113,15 @@ public class BoardPosition {
 	public BoardDirection DirectionFrom(BoardPosition position) {
 		BoardPosition targetPosition = this;
 
-		return new BoardDirection(targetPosition.getRow() - position.getRow(),
-				targetPosition.getColumn() - position.getColumn());
+		return BoardDirection.FromOffsets(
+				targetPosition.getColumn() - position.getColumn(),
+				targetPosition.getRow() - position.getRow());
+	}
+
+	/**
+	 * @return the board
+	 */
+	public Board getBoard() {
+		return board;
 	}
 }

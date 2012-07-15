@@ -35,10 +35,11 @@ public class RandomGhostMovementAlgorithm implements GhostMovementAlgorithm {
 		// pick a remaining unexplored space at random
 		ArrayList<BoardPosition> unexplored = new ArrayList<BoardPosition>();
 
-		for (int row = 0; row < Board.ROWS; ++row) {
-			for (int column = 0; column < Board.COLUMNS; ++column) {
+		Board board = ghost.getBoard();
+		for (int row = 0; row < board.ROWS; ++row) {
+			for (int column = 0; column < board.COLUMNS; ++column) {
 				if (explored[row][column] == false) {
-					unexplored.add(new BoardPosition(row, column));
+					unexplored.add(board.BoardPosition(row, column));
 				}
 			}
 		}

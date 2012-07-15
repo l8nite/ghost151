@@ -35,7 +35,8 @@ public class LinearGhostMovementAlgorithm implements GhostMovementAlgorithm {
 	 * @return a position that we want to move towards
 	 */
 	@Override
-	public BoardPosition DetermineNextPosition(Ghost ghost, Random generator) {
+	public BoardPosition DetermineNextPosition(Ghost ghost,
+			Random generator) {
 		BoardPosition targetPosition = ghost.getPosition();
 
 		HashMap<BoardDirection, ScoredBoardPosition> scores = new HashMap<BoardDirection, ScoredBoardPosition>();
@@ -89,8 +90,7 @@ public class LinearGhostMovementAlgorithm implements GhostMovementAlgorithm {
 	 *         unexplored space. The score is -1 if there are no unexplored
 	 *         spaces in the given direction
 	 */
-	private ScoredBoardPosition LinearCountExploredPositions(Ghost ghost,
-			BoardDirection direction) {
+	private ScoredBoardPosition LinearCountExploredPositions(Ghost ghost, BoardDirection direction) {
 		BoardPosition position = ghost.getPosition();
 
 		int row = position.getRow();
@@ -103,8 +103,10 @@ public class LinearGhostMovementAlgorithm implements GhostMovementAlgorithm {
 
 		boolean[][] explored = ghost.getExploredPositions();
 
-		while ((row + dy) >= 0 && (row + dy) < Board.ROWS && (column + dx) >= 0
-				&& (column + dx) < Board.COLUMNS) {
+		Board board = ghost.getBoard();
+
+		while ((row + dy) >= 0 && (row + dy) < board.ROWS && (column + dx) >= 0
+				&& (column + dx) < board.COLUMNS) {
 			row += dy;
 			column += dx;
 
@@ -116,7 +118,7 @@ public class LinearGhostMovementAlgorithm implements GhostMovementAlgorithm {
 		}
 
 		ScoredBoardPosition scoredBoardPosition = new ScoredBoardPosition(row,
-				column, exploredPositionCount);
+				column, board, exploredPositionCount);
 
 		// if we ended up hitting a boundary, then there are no unexplored
 		// positions in this direction --

@@ -26,13 +26,19 @@ public class GameDriver {
 		} catch (Exception e) {
 		}
 
-		int maximumGhosts = Board.ROWS * Board.COLUMNS - 2 * Board.ROWS - 2
-				* (Board.COLUMNS - 2) - 1;
+		Board board = game.getBoard();
+
+		int maximumGhosts = board.ROWS * board.COLUMNS - 2 * board.ROWS - 2
+				* (board.COLUMNS - 2) - 1;
 
 		if (numberOfGhosts > maximumGhosts) {
-			System.out.println("Number of ghosts was capped at "
-					+ maximumGhosts);
-			numberOfGhosts = maximumGhosts;
+			System.out.println("The maximum # of ghosts is: " + maximumGhosts);
+			return;
+		}
+
+		if (numberOfGhosts < 1) {
+			System.out.println("Need at least 1 ghost on the board");
+			return;
 		}
 
 		game.Run(numberOfGhosts);

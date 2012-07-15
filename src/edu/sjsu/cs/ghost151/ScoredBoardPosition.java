@@ -19,8 +19,8 @@ public class ScoredBoardPosition extends BoardPosition {
 	 * @param column
 	 *            The column for this position
 	 */
-	public ScoredBoardPosition(int row, int column) {
-		this(row, column, -1);
+	public ScoredBoardPosition(int row, int column, Board board) {
+		this(row, column, board, -1);
 	}
 
 	/**
@@ -33,8 +33,8 @@ public class ScoredBoardPosition extends BoardPosition {
 	 * @param score
 	 *            The score for this position
 	 */
-	public ScoredBoardPosition(int row, int column, int score) {
-		super(row, column);
+	public ScoredBoardPosition(int row, int column, Board board, int score) {
+		super(row, column, board);
 		this.score = score;
 	}
 

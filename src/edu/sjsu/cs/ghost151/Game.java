@@ -47,6 +47,10 @@ public enum Game {
 	private Board board;
 
 	private boolean isRunning;
+	
+	private Game() {
+		board = new Board();
+	}
 
 	/**
 	 * Initializes the main game board, creates the specified number of Ghosts
@@ -59,7 +63,6 @@ public enum Game {
 	 *            board
 	 */
 	public void ConfigureBoard(int numberOfGhosts, Random generator) {
-		board = Board.INSTANCE;
 		board.Initialize();
 
 		this.numberOfGhosts = numberOfGhosts;
@@ -91,7 +94,7 @@ public enum Game {
 		}
 
 		for (int i = 0; i < numberOfGhosts; ++i) {
-			ghosts[i] = new Ghost();
+			ghosts[i] = new Ghost(board);
 
 			BoardObject empty = empties.get(generator.nextInt(empties.size()));
 			empties.remove(empty);
@@ -132,13 +135,6 @@ public enum Game {
 		ConfigureBoard(numberOfGhosts, generator);
 
 		isRunning = true;
-
-		Render();
-
-		try {
-			Thread.sleep(1000);
-		} catch (InterruptedException interruptedException) {
-		}
 
 		while (isRunning) {
 			Update();
@@ -183,13 +179,6 @@ public enum Game {
 				}
 			}
 		}
-	}
-
-	/**
-	 * End the simulation at the end of the next Update() loop
-	 */
-	public void Terminate() {
-		isRunning = false;
 	}
 
 	/**
@@ -258,5 +247,12 @@ public enum Game {
 	 */
 	public Ghost[] getGhosts() {
 		return ghosts;
+	}
+
+	/**
+	 * @return the board
+	 */
+	public Board getBoard() {
+		return board;
 	}
 }

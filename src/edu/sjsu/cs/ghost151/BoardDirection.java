@@ -7,16 +7,9 @@ package edu.sjsu.cs.ghost151;
  * The class also contains a number of helpful static attributes for the 8
  * compass directions, plus a "STAYPUT" direction that has 0 offsets.
  */
-public class BoardDirection {
-	public static final BoardDirection STAYPUT = new BoardDirection(0, 0);
-	public static final BoardDirection LEFT = new BoardDirection(-1, 0);
-	public static final BoardDirection RIGHT = new BoardDirection(1, 0);
-	public static final BoardDirection UP = new BoardDirection(0, -1);
-	public static final BoardDirection DOWN = new BoardDirection(0, 1);
-	public static final BoardDirection LEFTUP = new BoardDirection(-1, -1);
-	public static final BoardDirection LEFTDOWN = new BoardDirection(-1, 1);
-	public static final BoardDirection RIGHTUP = new BoardDirection(1, -1);
-	public static final BoardDirection RIGHTDOWN = new BoardDirection(1, 1);
+public enum BoardDirection {
+	LEFTUP(-1, -1), UP(0, -1), RIGHTUP(1, -1), LEFT(-1, 0), STAYPUT(0, 0), RIGHT(
+			1, 0), LEFTDOWN(-1, 1), DOWN(0, 1), RIGHTDOWN(1, 1);
 
 	private final int rowOffset;
 	private final int columnOffset;
@@ -27,31 +20,9 @@ public class BoardDirection {
 	 * @param rowOffset
 	 * @param columnOffset
 	 */
-	public BoardDirection(int rowOffset, int columnOffset) {
-		if (rowOffset != 0) {
-			rowOffset /= Math.abs(rowOffset);
-		}
-
+	private BoardDirection(int columnOffset, int rowOffset) {
 		this.rowOffset = rowOffset;
-
-		if (columnOffset != 0) {
-			columnOffset /= Math.abs(columnOffset);
-		}
-
 		this.columnOffset = columnOffset;
-	}
-
-	/**
-	 * Calculates a new BoardPosition based on a given position and this
-	 * Direction
-	 * 
-	 * @param position
-	 *            the "from" position
-	 * @return the BoardPosition in our direction from the given position
-	 */
-	public BoardPosition PositionFrom(BoardPosition position) {
-		return new BoardPosition(position.getRow() + rowOffset,
-				position.getColumn() + columnOffset);
 	}
 
 	/**
@@ -73,11 +44,111 @@ public class BoardDirection {
 	 *         bottom order
 	 */
 	public static BoardDirection[] CompassDirections() {
-		BoardDirection[] compass = { BoardDirection.LEFTUP, BoardDirection.UP,
-				BoardDirection.RIGHTUP, BoardDirection.LEFT,
-				BoardDirection.RIGHT, BoardDirection.LEFTDOWN,
-				BoardDirection.DOWN, BoardDirection.RIGHTDOWN, };
-
+		BoardDirection[] compass = { LEFTUP, UP, RIGHTUP, LEFT, RIGHT,
+				LEFTDOWN, DOWN, RIGHTDOWN };
 		return compass;
+	}
+
+	/**
+	 * Calculates a new BoardPosition based on a given position and this
+	 * Direction
+	 * 
+	 * @param position
+	 *            the "from" position
+	 * @return the BoardPosition in our direction from the given position
+	 */
+	public BoardPosition PositionFrom(BoardPosition position) {
+		BoardPosition newPosition = null;
+
+		try {
+			newPosition = new BoardPosition(position.getRow() + rowOffset,
+					position.getColumn() + columnOffset, position.getBoard());
+		} catch (IndexOutOfBoundsException indexOutOfBoundsException) {
+		}
+
+		return newPosition;
+	}
+
+	/**
+	 * Returns a BoardDirection from the given offsets
+	 * 
+	 * @param columnOffset
+	 *            An integer representing the column offset
+	 * @param rowOffset
+	 *            An integer representing the row offset
+	 * @return The BoardDirection representing the unit-scaled offsets
+	 */
+	public static BoardDirection FromOffsets(int columnOffset, int rowOffset) {
+		if (columnOffset < 0) {
+			if (rowOffset < 0) {
+				return LEFTUP;
+			} else if (rowOffset == 0) {
+				return LEFT;
+			} else {
+				return LEFTDOWN;
+			}
+		} else if (columnOffset == 0) {
+			if (rowOffset < 0) {
+				return UP;
+			} else if (rowOffset == 0) {
+				return STAYPUT;
+			} else {
+				return DOWN;
+			}
+		} else {
+			if (rowOffset < 0) {
+				return RIGHTUP;
+			} else if (rowOffset == 0) {
+				return RIGHT;
+			} else {
+				return RIGHTDOWN;
+			}
+		}
+	}
+
+	/**
+	 * Returns a BoardDirection representing the horizontal component of the
+	 * current BoardDirection
+	 * 
+	 * @return the horizontal component BoardDirection
+	 */
+	public BoardDirection HorizontalComponent() {
+		if (this == UP || this == DOWN || this == STAYPUT) {
+			return STAYPUT;
+		}
+
+		if (this == LEFTUP || this == LEFTDOWN) {
+			return LEFT;
+		}
+
+		if (this == RIGHTUP || this == RIGHTDOWN) {
+			return RIGHT;
+		}
+
+		// LEFT, RIGHT
+		return this;
+	}
+
+	/**
+	 * Returns a BoardDirection representing the vertical component of the
+	 * current BoardDirection
+	 * 
+	 * @return the vertical component BoardDirection
+	 */
+	public BoardDirection VerticalComponent() {
+		if (this == LEFT || this == RIGHT || this == STAYPUT) {
+			return STAYPUT;
+		}
+
+		if (this == LEFTUP || this == RIGHTUP) {
+			return UP;
+		}
+
+		if (this == LEFTDOWN || this == RIGHTDOWN) {
+			return DOWN;
+		}
+
+		// UP, DOWN
+		return this;
 	}
 }

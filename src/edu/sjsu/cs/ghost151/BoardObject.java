@@ -7,9 +7,9 @@ package edu.sjsu.cs.ghost151;
  * for retrieving its String representation
  */
 public class BoardObject {
+	private BoardObjectType type;
 
 	protected BoardPosition position;
-	private BoardObjectType type;
 	protected Board board;
 
 	/**
@@ -17,10 +17,25 @@ public class BoardObject {
 	 * 
 	 * @param type
 	 *            the type the object should be set to
+	 * @param board
+	 *            the board this object belongs to
 	 */
 	public BoardObject(BoardObjectType type) {
-		board = Board.INSTANCE;
 		setType(type);
+	}
+
+	/**
+	 * @return the board
+	 */
+	public Board getBoard() {
+		return board;
+	}
+
+	/**
+	 * @param board the board to set
+	 */
+	public void setBoard(Board board) {
+		this.board = board;
 	}
 
 	/**

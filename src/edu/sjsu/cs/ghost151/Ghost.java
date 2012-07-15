@@ -17,8 +17,8 @@ public class Ghost extends BoardObject {
 	/**
 	 * Constructs a new Ghost with a new random number generator
 	 */
-	public Ghost() {
-		this(new Random());
+	public Ghost(Board board) {
+		this(board, new Random());
 	}
 
 	/**
@@ -30,12 +30,13 @@ public class Ghost extends BoardObject {
 	 * @param generator
 	 *            The Random generator to use
 	 */
-	public Ghost(Random generator) {
+	public Ghost(Board board, Random generator) {
 		super(BoardObjectType.Ghost);
 
+		setBoard(board);
 		this.generator = generator;
 
-		exploredPositions = new boolean[Board.ROWS][Board.COLUMNS];
+		exploredPositions = new boolean[board.ROWS][board.COLUMNS];
 
 		movementAlgorithm = GhostMovementAlgorithmType.LINEAR.CreateInstance();
 	}
@@ -94,13 +95,14 @@ public class Ghost extends BoardObject {
 
 		// if we can't move that way, try just one component
 		if (!AbleToMoveDirection(moveDirection)) {
-			int rowOffset = moveDirection.getRowOffset();
-			moveDirection = new BoardDirection(0,
-					moveDirection.getColumnOffset());
+			BoardDirection newMoveDirection = moveDirection
+					.HorizontalComponent();
 
-			if (!AbleToMoveDirection(moveDirection)) {
-				moveDirection = new BoardDirection(rowOffset, 0);
+			if (!AbleToMoveDirection(newMoveDirection)) {
+				newMoveDirection = moveDirection.VerticalComponent();
 			}
+
+			moveDirection = newMoveDirection;
 
 			movePosition = moveDirection.PositionFrom(position);
 		}
@@ -121,8 +123,16 @@ public class Ghost extends BoardObject {
 	 * @param newPosition
 	 *            the object's new position
 	 */
-	private void MoveTo(BoardPosition newPosition) {
-		if (null == newPosition || !board.IsValidMoveTarget(newPosition)) {
+	public void MoveTo(BoardPosition newPosition) {
+		if (newPosition == null) {
+			return;
+		}
+
+		if (board != newPosition.getBoard()) {
+			return;
+		}
+
+		if (!board.IsValidMoveTarget(newPosition)) {
 			return;
 		}
 
@@ -155,7 +165,7 @@ public class Ghost extends BoardObject {
 	 * @param position
 	 *            the position to mark as explored
 	 */
-	private void MarkAsExplored(BoardPosition position) {
+	public void MarkAsExplored(BoardPosition position) {
 		exploredPositions[position.getRow()][position.getColumn()] = true;
 	}
 
@@ -167,7 +177,7 @@ public class Ghost extends BoardObject {
 	 *            the direction we want to know about
 	 * @return true if we're able to move in that direction, false otherwise
 	 */
-	private boolean AbleToMoveDirection(BoardDirection direction) {
+	public boolean AbleToMoveDirection(BoardDirection direction) {
 		BoardPosition position = direction.PositionFrom(this.position);
 
 		if (board.IsValidMoveTarget(position)) {
@@ -188,11 +198,10 @@ public class Ghost extends BoardObject {
 		BoardPosition center = position;
 
 		for (BoardDirection direction : BoardDirection.CompassDirections()) {
-			BoardObject object = board.GetObjectAt(direction
-					.PositionFrom(center));
+			BoardPosition objectPosition = direction.PositionFrom(center);
 
-			if (object != null) {
-				surroundings.add(object);
+			if (objectPosition != null) {
+				surroundings.add(board.GetObjectAt(objectPosition));
 			}
 		}
 
@@ -211,6 +220,7 @@ public class Ghost extends BoardObject {
 	@Override
 	public void setPosition(BoardPosition position) {
 		super.setPosition(position);
+		Scan();
 		MarkAsExplored(position);
 	}
 
@@ -221,6 +231,14 @@ public class Ghost extends BoardObject {
 	 */
 	public boolean[][] getExploredPositions() {
 		return exploredPositions;
+	}
+
+	/**
+	 * @param exploredPositions
+	 *            the exploredPositions to set
+	 */
+	public void setExploredPositions(boolean[][] exploredPositions) {
+		this.exploredPositions = exploredPositions;
 	}
 
 	/**

@@ -36,8 +36,10 @@ public class NearestGhostMovementAlgorithm implements GhostMovementAlgorithm {
 		ArrayList<ScoredBoardPosition> tiedChoices = new ArrayList<ScoredBoardPosition>();
 		int minimumScore = Integer.MAX_VALUE;
 
-		for (int row = 0; row < Board.ROWS; ++row) {
-			for (int column = 0; column < Board.COLUMNS; ++column) {
+		Board board = ghost.getBoard();
+
+		for (int row = 0; row < board.ROWS; ++row) {
+			for (int column = 0; column < board.COLUMNS; ++column) {
 				if (explored[row][column] == false) {
 					// score this unexplored space as # of moves to reach it
 					int rowDifference = Math.abs(ghostPosition.getRow() - row);
@@ -50,10 +52,10 @@ public class NearestGhostMovementAlgorithm implements GhostMovementAlgorithm {
 						minimumScore = score;
 						tiedChoices.clear();
 						tiedChoices.add(new ScoredBoardPosition(row, column,
-								score));
+								board, score));
 					} else if (score == minimumScore) {
 						tiedChoices.add(new ScoredBoardPosition(row, column,
-								score));
+								board, score));
 					}
 				}
 			}

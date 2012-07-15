@@ -1,40 +1,45 @@
 package edu.sjsu.cs.ghost151;
 
 /**
- * The <b>Board</b> class is a singleton which represents the environment for
- * the simulation. It provides operations for getting and setting the objects at
- * a particular {@link edu.sjsu.cs.ghost151.BoardPosition}.
+ * The <b>Board</b> class represents the environment for the simulation. It
+ * provides operations for getting and setting the objects at a particular
+ * {@link edu.sjsu.cs.ghost151.BoardPosition}.
  */
-public enum Board {
-	/**
-	 * Board is a singleton, use Board.INSTANCE to get the instance.
-	 */
-	INSTANCE;
-
-	/**
-	 * The number of rows this board contains
-	 */
-	public static final int ROWS = 10;
-
-	/**
-	 * The number of columns this board contains.
-	 */
-	public static final int COLUMNS = 20;
+public class Board {
+	public final int ROWS;
+	public final int COLUMNS;
 
 	private BoardObject grid[][];
 	private BoardRenderer renderer;
 
 	/**
-	 * Constructs and Initializes the Board
+	 * Constructs and Initializes a 10x20 board
 	 */
-	private Board() {
-		Initialize();
+	public Board() {
+		this(10, 20);
+	}
+
+	/**
+	 * Constructs and Initializes the Board with the specified number of rows
+	 * and columns. The smallest number of rows or columns is 2 (the Board would
+	 * consist entirely of Walls)
+	 */
+	public Board(int numberOfRows, int numberOfColumns) {
 		renderer = new StandardBoardRenderer();
+
+		if (numberOfRows < 2 || numberOfColumns < 2) {
+			throw new IndexOutOfBoundsException();
+		}
+
+		ROWS = numberOfRows;
+		COLUMNS = numberOfColumns;
+
+		Initialize();
 	}
 
 	/**
 	 * Places Wall BoardObjects at the edges of the board and Empty BoardObjects
-	 * in the interior
+	 * everywhere within the interior
 	 */
 	public void Initialize() {
 		grid = new BoardObject[ROWS][COLUMNS];
@@ -49,7 +54,7 @@ public enum Board {
 					object.setType(BoardObjectType.Wall);
 				}
 
-				SetObjectAt(new BoardPosition(row, column), object);
+				SetObjectAt(new BoardPosition(row, column, this), object);
 			}
 		}
 	}
@@ -86,6 +91,10 @@ public enum Board {
 	 * @return false otherwise
 	 */
 	public boolean IsValidMoveTarget(BoardPosition position) {
+		if (position.getBoard() != this) {
+			return false;
+		}
+
 		BoardObjectType type = GetObjectAt(position).getType();
 
 		if (type == BoardObjectType.Empty) {
@@ -108,7 +117,11 @@ public enum Board {
 	 *            the object to place
 	 */
 	public void SetObjectAt(BoardPosition boardPosition, BoardObject boardObject) {
+		if (boardPosition.getBoard() != this) {
+			return;
+		}
 		boardObject.setPosition(boardPosition);
+		boardObject.setBoard(this);
 		grid[boardPosition.getRow()][boardPosition.getColumn()] = boardObject;
 	}
 
@@ -120,15 +133,24 @@ public enum Board {
 	 * @return the object at that position or null if position is out of range
 	 */
 	public BoardObject GetObjectAt(BoardPosition boardPosition) {
-		int row = boardPosition.getRow();
-		int column = boardPosition.getColumn();
-
-		if (row >= 0 && row < Board.ROWS && column >= 0
-				&& column < Board.COLUMNS) {
-			return grid[row][column];
+		if (boardPosition.getBoard() == this) {
+			return grid[boardPosition.getRow()][boardPosition.getColumn()];
 		} else {
 			return null;
 		}
+	}
+
+	/**
+	 * Creates a new BoardPosition for this board
+	 * 
+	 * @param row
+	 *            the row for the new position
+	 * @param column
+	 *            the column for the new position
+	 * @return a new BoardPosition for this board
+	 */
+	public BoardPosition BoardPosition(int row, int column) {
+		return new BoardPosition(row, column, this);
 	}
 
 	/**
