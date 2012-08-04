@@ -47,9 +47,10 @@ public class Ghost extends BoardObject {
 	 * our surroundings
 	 */
 	public void Scan() {
-		BoardObject[] surroundings = GetSurroundings();
+		BoardObjectIterator surroundings = GetSurroundings();
 
-		for (BoardObject object : surroundings) {
+		while (surroundings.hasNext()) {
+			BoardObject object = surroundings.next();
 			MarkAsExplored(object.getPosition());
 
 			if (object.getType() == BoardObjectType.Target) {
@@ -199,7 +200,7 @@ public class Ghost extends BoardObject {
 	 * 
 	 * @return an array of BoardObject for the positions around us.
 	 */
-	private BoardObject[] GetSurroundings() {
+	private BoardObjectIterator GetSurroundings() {
 		ArrayList<BoardObject> surroundings = new ArrayList<BoardObject>();
 
 		BoardPosition center = position;
@@ -213,9 +214,7 @@ public class Ghost extends BoardObject {
 		}
 
 		BoardObject[] surroundingsArray = new BoardObject[surroundings.size()];
-		surroundings.toArray(surroundingsArray);
-
-		return surroundingsArray;
+		return new BoardObjectIterator(surroundings.toArray(surroundingsArray));
 	}
 
 	/**
