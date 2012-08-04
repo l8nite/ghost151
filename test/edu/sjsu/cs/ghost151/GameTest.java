@@ -134,7 +134,7 @@ public class GameTest {
 	@Test
 	public void testIncrementCommunicationsCount() {
 		int previous = game.getNumberOfCommunications();
-		game.IncrementCommunicationsCount();
+		game.NotifyGhostCommunication();
 		assertEquals(previous + 1, game.getNumberOfCommunications());
 	}
 
@@ -145,7 +145,7 @@ public class GameTest {
 	@Test
 	public void testIncrementMovementCount() {
 		int previous = game.getNumberOfMovements();
-		game.IncrementMovementCount();
+		game.NotifyGhostMovement();
 		assertEquals(previous + 1, game.getNumberOfMovements());
 	}
 }

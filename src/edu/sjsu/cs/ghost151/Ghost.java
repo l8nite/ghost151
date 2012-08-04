@@ -13,6 +13,7 @@ public class Ghost extends BoardObject {
 	private boolean exploredPositions[][];
 	private boolean targetAcquired = false;
 	private Random generator;
+	private GhostObserver observer;
 
 	/**
 	 * Constructs a new Ghost with a new random number generator
@@ -74,6 +75,10 @@ public class Ghost extends BoardObject {
 					exploredPositions[row][column] = incoming[row][column];
 				}
 			}
+		}
+		
+		if (observer != null) {
+			observer.NotifyGhostCommunication();
 		}
 	}
 
@@ -147,7 +152,9 @@ public class Ghost extends BoardObject {
 		board.SetObjectAt(oldPosition, new BoardObject(BoardObjectType.Empty));
 		board.SetObjectAt(newPosition, this);
 
-		Game.INSTANCE.IncrementMovementCount();
+		if (observer != null) {
+			observer.NotifyGhostMovement();
+		}
 	}
 
 	/**
@@ -258,5 +265,19 @@ public class Ghost extends BoardObject {
 	 */
 	public void setMovementAlgorithm(GhostMovementAlgorithm movementAlgorithm) {
 		this.movementAlgorithm = movementAlgorithm;
+	}
+
+	/**
+	 * @return the observer
+	 */
+	public GhostObserver getObserver() {
+		return observer;
+	}
+
+	/**
+	 * @param observer the observer to set
+	 */
+	public void setObserver(GhostObserver observer) {
+		this.observer = observer;
 	}
 }

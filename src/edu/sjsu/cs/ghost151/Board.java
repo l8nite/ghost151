@@ -16,7 +16,7 @@ public class Board {
 	 * Constructs and Initializes a 10x20 board
 	 */
 	public Board() {
-		this(10, 20);
+		this(20, 40);
 	}
 
 	/**
@@ -25,7 +25,7 @@ public class Board {
 	 * consist entirely of Walls)
 	 */
 	public Board(int numberOfRows, int numberOfColumns) {
-		renderer = new StandardBoardRenderer();
+		renderer = new GhostVisionBoardRenderer();
 
 		if (numberOfRows < 2 || numberOfColumns < 2) {
 			throw new IndexOutOfBoundsException();

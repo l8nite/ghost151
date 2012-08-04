@@ -33,7 +33,7 @@ import java.util.Random;
  * <li>Exit the game</li>
  * </ul>
  */
-public enum Game {
+public enum Game implements GhostObserver {
 	INSTANCE; // singleton
 
 	private int numberOfGhosts;
@@ -95,6 +95,7 @@ public enum Game {
 
 		for (int i = 0; i < numberOfGhosts; ++i) {
 			ghosts[i] = new Ghost(board);
+			ghosts[i].setObserver(this);
 
 			BoardObject empty = empties.get(generator.nextInt(empties.size()));
 			empties.remove(empty);
@@ -175,7 +176,6 @@ public enum Game {
 				if (ghost1 != ghost2) {
 					ghost1.CommunicateWith(ghost2);
 					ghost2.CommunicateWith(ghost1);
-					IncrementCommunicationsCount();
 				}
 			}
 		}
@@ -202,14 +202,14 @@ public enum Game {
 	/**
 	 * Increments the communication counter
 	 */
-	public void IncrementCommunicationsCount() {
+	private void IncrementCommunicationsCount() {
 		++numberOfCommunications;
 	}
 
 	/**
 	 * Increments the movement counter
 	 */
-	public void IncrementMovementCount() {
+	private void IncrementMovementCount() {
 		++numberOfMovements;
 	}
 
@@ -254,5 +254,15 @@ public enum Game {
 	 */
 	public Board getBoard() {
 		return board;
+	}
+
+	@Override
+	public void NotifyGhostMovement() {
+		IncrementMovementCount();
+	}
+
+	@Override
+	public void NotifyGhostCommunication() {
+		IncrementCommunicationsCount();
 	}
 }
