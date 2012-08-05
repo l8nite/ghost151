@@ -21,10 +21,10 @@ public class WindowGameDriver {
 	
 	private JFrame launcherFrame;
 	private JTextArea numberOfGhostsTextArea;
-        private JFrame outputFrame;
-        private JTextArea outputGame;
-        private String outputString;
-        private Board gBoard;
+        public JFrame outputFrame;
+        public JTextArea outputGame;
+        public Board gBoard;
+        public String outputData;
         
 	public WindowGameDriver() {
 		launcherFrame = new JFrame("Ghost151");
@@ -90,55 +90,7 @@ public class WindowGameDriver {
 			return;
 		}
                 
-                
-                /*outputFrame = new JFrame("Ghost151 Simulation");
-		outputFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-                
-                Container contentPanel = outputFrame.getContentPane();
-		contentPanel.setLayout(new GridBagLayout());
-		 
-                GridBagConstraints constraints = new GridBagConstraints();
-                
-                constraints.gridx = 0;
-                constraints.gridy = 0;
-                outputGame = new JTextArea(25,27);
-                outputGame.setText(board.toString());
-                contentPanel.add(outputGame, constraints);
-
-		constraints.gridx = 0;
-		constraints.gridy = 1;
-		constraints.gridwidth = 2;
-		constraints.fill = GridBagConstraints.HORIZONTAL;
-                
-                outputFrame.pack();
-		outputFrame.setLocation(100, 0);
-		outputFrame.setVisible(true);*/
-                
                 game.Run(numberOfGhosts);
                 
-                //while(game.isRunning){
-                //    outputGame.setText(game.getBoard().toString());
-                //}
-                
-                /*Random generator = new Random();
-		game.ConfigureBoard(numberOfGhosts, generator);
-
-		game.isRunning = true;
-                
-                while (game.isRunning) {
-			game.Update();
-                        gBoard = game.getBoard();
-                        outputGame.setText(gBoard.toString());
-			++game.numberOfGameLoops;
-
-			// slow down the game loop so that rendering is human-speed
-			try {
-				Thread.sleep(500);
-                                outputGame.setText("");
-			} catch (InterruptedException interruptedException) {
-			}
-		}
-                
-                outputGame.setText(game.GetStatistics());*/
 	}
 }

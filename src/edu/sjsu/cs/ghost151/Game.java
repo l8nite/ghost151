@@ -2,6 +2,13 @@ package edu.sjsu.cs.ghost151;
 
 import java.util.ArrayList;
 import java.util.Random;
+import java.awt.Container;
+import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import javax.swing.*;
+import javax.swing.SwingUtilities;
 
 /**
  * The <b>Game</b> class contains the core logic for our simulation.
@@ -45,8 +52,12 @@ public enum Game implements GhostObserver {
 
 	private Ghost ghosts[];
 	private Board board;
+        public String rawData;
 
 	public boolean isRunning;
+        
+        WindowGameDriver guiRender = new WindowGameDriver();
+        
 	
 	private Game() {
 		board = new Board();
@@ -134,9 +145,32 @@ public enum Game implements GhostObserver {
 	public void Run(int numberOfGhosts) {
 		Random generator = new Random();
 		ConfigureBoard(numberOfGhosts, generator);
+               
+                    isRunning = true;
+                
+                    guiRender.outputFrame = new JFrame("Ghost151 Simulation");
+                    guiRender.outputFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+                
+                    Container contentPanel = guiRender.outputFrame.getContentPane();
+                    contentPanel.setLayout(new GridBagLayout());	 
+               
+                    GridBagConstraints constraints = new GridBagConstraints();
+                
+                    constraints.gridx = 0;
+                    constraints.gridy = 0;
+                    guiRender.outputGame = new JTextArea(50,50);
+                    guiRender.outputGame.setText(rawData);
+                    contentPanel.add(guiRender.outputGame, constraints);
 
-		isRunning = true;
+                    constraints.gridx = 0;
+                    constraints.gridy = 1;
+                    constraints.gridwidth = 2;
+                    constraints.fill = GridBagConstraints.HORIZONTAL;
+                
+                    guiRender.outputFrame.pack();
+                    guiRender.outputFrame.setLocation(100, 0);
 
+                    
 		while (isRunning) {
 			Update();
 			Render();
@@ -185,7 +219,12 @@ public enum Game implements GhostObserver {
 	 * Draws the board to stdout
 	 */
 	public void Render() {
-		System.out.print(board.toString());
+		//System.out.print(board.toString());
+                rawData = board.toString();
+                System.out.println(rawData);
+                
+                guiRender.outputGame.setText(rawData);
+  
 	}
 
 	/**
