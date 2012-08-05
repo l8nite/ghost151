@@ -1,10 +1,6 @@
 package edu.sjsu.cs.ghost151;
 
-import javax.swing.JButton;
-import javax.swing.JFrame;
-import javax.swing.JLabel;
-import javax.swing.JOptionPane;
-import javax.swing.JTextArea;
+
 import java.awt.Container;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
@@ -26,8 +22,8 @@ public class WindowGameDriver {
 	private JTextArea numberOfGhostsTextArea;
         private JFrame outputFrame;
         private JTextArea outputGame;
-        private JTextField numberofGhostOutput;
-	
+        private String outputString;
+        
 	public WindowGameDriver() {
 		launcherFrame = new JFrame("Ghost151");
 		launcherFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -92,6 +88,8 @@ public class WindowGameDriver {
 			return;
 		}
                 
+                //game.Run(numberOfGhosts);
+                
                 outputFrame = new JFrame("Ghost151 Simulation");
 		outputFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
                 
@@ -100,15 +98,12 @@ public class WindowGameDriver {
 		 
                 GridBagConstraints constraints = new GridBagConstraints();
 		// add a label to prompt the user
-		constraints.gridx = 0;
-		constraints.gridy = 0;
-		constraints.insets = new Insets(0, 0, 300, 600);
-		contentPanel.add(new JLabel("Output: "), constraints);  
-                
+		 
                 constraints.gridx = 0;
-		constraints.gridy = 1;
-		numberOfGhostsTextArea = new JTextField("4", 1, 4);
-		contentPanel.add(numberOfGhostsTextArea, constraints);
+		constraints.gridy = 0;
+		outputGame = new JTextArea(25,27);
+                outputGame.setText(board.toString());
+		contentPanel.add(outputGame, constraints);
 		
 		constraints.gridx = 0;
 		constraints.gridy = 1;
