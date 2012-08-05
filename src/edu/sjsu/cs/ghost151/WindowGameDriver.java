@@ -7,6 +7,7 @@ import java.awt.GridBagLayout;
 import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.Random;
 import javax.swing.*;
 
 /**
@@ -23,6 +24,8 @@ public class WindowGameDriver {
         private JFrame outputFrame;
         private JTextArea outputGame;
         private String outputString;
+        private boolean isRunning;
+        private int numberOfGameLoops;
         
 	public WindowGameDriver() {
 		launcherFrame = new JFrame("Ghost151");
@@ -97,14 +100,13 @@ public class WindowGameDriver {
 		contentPanel.setLayout(new GridBagLayout());
 		 
                 GridBagConstraints constraints = new GridBagConstraints();
-		// add a label to prompt the user
-		 
+                
                 constraints.gridx = 0;
-		constraints.gridy = 0;
-		outputGame = new JTextArea(25,27);
+                constraints.gridy = 0;
+                outputGame = new JTextArea(25,27);
                 outputGame.setText(board.toString());
-		contentPanel.add(outputGame, constraints);
-		
+                contentPanel.add(outputGame, constraints);
+
 		constraints.gridx = 0;
 		constraints.gridy = 1;
 		constraints.gridwidth = 2;
@@ -113,5 +115,25 @@ public class WindowGameDriver {
                 outputFrame.pack();
 		outputFrame.setLocation(100, 0);
 		outputFrame.setVisible(true);
+                
+                Random generator = new Random();
+		game.ConfigureBoard(numberOfGhosts, generator);
+
+		isRunning = true;
+                
+                while (isRunning) {
+			game.Update();
+                        outputGame.setText(board.toString());
+			++numberOfGameLoops;
+
+			// slow down the game loop so that rendering is human-speed
+			try {
+				Thread.sleep(500);
+                                outputGame.setText("");
+			} catch (InterruptedException interruptedException) {
+			}
+		}
+                
+                outputGame.setText(game.GetStatistics());
 	}
 }
