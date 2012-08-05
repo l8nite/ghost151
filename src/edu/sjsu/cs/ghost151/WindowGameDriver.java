@@ -11,6 +11,7 @@ import java.awt.GridBagLayout;
 import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import javax.swing.*;
 
 /**
  * <b>ConsoleGameDriver</b> is responsible for instantiating the Game instance and
@@ -23,6 +24,9 @@ public class WindowGameDriver {
 	
 	private JFrame launcherFrame;
 	private JTextArea numberOfGhostsTextArea;
+        private JFrame outputFrame;
+        private JTextArea outputGame;
+        private JTextField numberofGhostOutput;
 	
 	public WindowGameDriver() {
 		launcherFrame = new JFrame("Ghost151");
@@ -87,7 +91,32 @@ public class WindowGameDriver {
 			JOptionPane.showMessageDialog(launcherFrame, "Need at least 1 ghost on the board");
 			return;
 		}
+                
+                outputFrame = new JFrame("Ghost151 Simulation");
+		outputFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+                
+                Container contentPanel = outputFrame.getContentPane();
+		contentPanel.setLayout(new GridBagLayout());
+		 
+                GridBagConstraints constraints = new GridBagConstraints();
+		// add a label to prompt the user
+		constraints.gridx = 0;
+		constraints.gridy = 0;
+		constraints.insets = new Insets(0, 0, 300, 600);
+		contentPanel.add(new JLabel("Output: "), constraints);  
+                
+                constraints.gridx = 0;
+		constraints.gridy = 1;
+		numberOfGhostsTextArea = new JTextField("4", 1, 4);
+		contentPanel.add(numberOfGhostsTextArea, constraints);
 		
-		JOptionPane.showMessageDialog(launcherFrame, "The game will eventually launch here!"); 
+		constraints.gridx = 0;
+		constraints.gridy = 1;
+		constraints.gridwidth = 2;
+		constraints.fill = GridBagConstraints.HORIZONTAL;
+                
+                outputFrame.pack();
+		outputFrame.setLocation(100, 0);
+		outputFrame.setVisible(true);
 	}
 }
