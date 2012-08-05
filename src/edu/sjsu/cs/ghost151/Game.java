@@ -40,13 +40,13 @@ public enum Game implements GhostObserver {
 
 	// statistics
 	private int numberOfCommunications;
-	private int numberOfGameLoops;
+	public int numberOfGameLoops;
 	private int numberOfMovements;
 
 	private Ghost ghosts[];
 	private Board board;
 
-	private boolean isRunning;
+	public boolean isRunning;
 	
 	private Game() {
 		board = new Board();

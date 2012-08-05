@@ -24,8 +24,7 @@ public class WindowGameDriver {
         private JFrame outputFrame;
         private JTextArea outputGame;
         private String outputString;
-        private boolean isRunning;
-        private int numberOfGameLoops;
+        private Board gBoard;
         
 	public WindowGameDriver() {
 		launcherFrame = new JFrame("Ghost151");
@@ -91,9 +90,8 @@ public class WindowGameDriver {
 			return;
 		}
                 
-                //game.Run(numberOfGhosts);
                 
-                outputFrame = new JFrame("Ghost151 Simulation");
+                /*outputFrame = new JFrame("Ghost151 Simulation");
 		outputFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
                 
                 Container contentPanel = outputFrame.getContentPane();
@@ -114,17 +112,24 @@ public class WindowGameDriver {
                 
                 outputFrame.pack();
 		outputFrame.setLocation(100, 0);
-		outputFrame.setVisible(true);
+		outputFrame.setVisible(true);*/
                 
-                Random generator = new Random();
+                game.Run(numberOfGhosts);
+                
+                //while(game.isRunning){
+                //    outputGame.setText(game.getBoard().toString());
+                //}
+                
+                /*Random generator = new Random();
 		game.ConfigureBoard(numberOfGhosts, generator);
 
-		isRunning = true;
+		game.isRunning = true;
                 
-                while (isRunning) {
+                while (game.isRunning) {
 			game.Update();
-                        outputGame.setText(board.toString());
-			++numberOfGameLoops;
+                        gBoard = game.getBoard();
+                        outputGame.setText(gBoard.toString());
+			++game.numberOfGameLoops;
 
 			// slow down the game loop so that rendering is human-speed
 			try {
@@ -134,6 +139,6 @@ public class WindowGameDriver {
 			}
 		}
                 
-                outputGame.setText(game.GetStatistics());
+                outputGame.setText(game.GetStatistics());*/
 	}
 }
