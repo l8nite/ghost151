@@ -25,6 +25,9 @@ public class WindowGameDriver {
         public JTextArea outputGame;
         public Board gBoard;
         public String outputData;
+        private int numberOfGhosts = 4;
+        
+        Game game = Game.INSTANCE;
         
 	public WindowGameDriver() {
 		launcherFrame = new JFrame("Ghost151");
@@ -65,8 +68,6 @@ public class WindowGameDriver {
 	}
 	
 	public void StartGame() {
-		Game game = Game.INSTANCE;
-		int numberOfGhosts = 4;
 
 		try {
 			numberOfGhosts = Integer.valueOf(numberOfGhostsTextArea.getText());
@@ -90,7 +91,55 @@ public class WindowGameDriver {
 			return;
 		}
                 
-                game.Run(numberOfGhosts);
+                Runnable r1 = new Runnable(){
+                    public void run(){
+                        game.Run(numberOfGhosts);
+                    }
+                };
                 
+                Runnable r2 = new Runnable(){
+                    public void run(){
+                        
+                        outputFrame = new JFrame("Ghost151 Simulation");
+                        outputFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+                
+                        Container contentPanel = outputFrame.getContentPane();
+                        contentPanel.setLayout(new GridBagLayout());	 
+               
+                        GridBagConstraints constraints = new GridBagConstraints();
+                
+                        constraints.gridx = 0;
+                        constraints.gridy = 0;
+                        outputGame = new JTextArea(50,50);
+                        outputGame.setText(game.rawData);
+                        contentPanel.add(outputGame, constraints);
+
+                        constraints.gridx = 0;
+                        constraints.gridy = 1;
+                        constraints.gridwidth = 2;
+                        constraints.fill = GridBagConstraints.HORIZONTAL;
+                
+                        outputFrame.pack();
+                        outputFrame.setLocation(100, 0);
+                        outputFrame.setVisible(true);
+                        
+                        while(game.isRunning){
+                            outputGame.setText(game.rawData);
+                            System.out.println(game.rawData);
+                            try {
+                                    Thread.sleep(500);
+                            } catch (InterruptedException interruptedException) {
+                            }
+                        }
+                        outputGame.setText(game.rawData);
+                        outputGame.append(game.GetStatistics());
+                    }
+                };
+                
+                Thread thr1 = new Thread(r1);
+                Thread thr2 = new Thread(r2);
+                thr1.start();
+                thr2.start();
+                    
 	}
 }

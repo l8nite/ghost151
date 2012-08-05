@@ -10,6 +10,21 @@ public class ConsoleGameDriver {
 	 * Starts the simulation
 	 * 
 	 * @param args
+	public static void main(String[] args) {
+		Game game = Game.INSTANCE;
+
+		int numberOfGhosts = 4;
+		try {
+			numberOfGhosts = Integer.valueOf(args[1]);
+		} catch (Exception e) {
+		}
+
+		Board board = game.getBoard();
+
+		int maximumGhosts = board.ROWS * board.COLUMNS - 2 * board.ROWS - 2
+				* (board.COLUMNS - 2) - 1;
+
+
 	 *            The first argument is optional and can be an integer
 	 *            representing the number of ghosts to place on the board.
 	 * 

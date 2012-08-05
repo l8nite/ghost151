@@ -56,7 +56,7 @@ public enum Game implements GhostObserver {
 
 	public boolean isRunning;
         
-        WindowGameDriver guiRender = new WindowGameDriver();
+        
         
 	
 	private Game() {
@@ -143,32 +143,9 @@ public enum Game implements GhostObserver {
 	 *            number of ghosts that will work to find the target
 	 */
 	public void Run(int numberOfGhosts) {
-		Random generator = new Random();
-		ConfigureBoard(numberOfGhosts, generator);
-               
-                    isRunning = true;
-                
-                    guiRender.outputFrame = new JFrame("Ghost151 Simulation");
-                    guiRender.outputFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-                
-                    Container contentPanel = guiRender.outputFrame.getContentPane();
-                    contentPanel.setLayout(new GridBagLayout());	 
-               
-                    GridBagConstraints constraints = new GridBagConstraints();
-                
-                    constraints.gridx = 0;
-                    constraints.gridy = 0;
-                    guiRender.outputGame = new JTextArea(50,50);
-                    guiRender.outputGame.setText(rawData);
-                    contentPanel.add(guiRender.outputGame, constraints);
-
-                    constraints.gridx = 0;
-                    constraints.gridy = 1;
-                    constraints.gridwidth = 2;
-                    constraints.fill = GridBagConstraints.HORIZONTAL;
-                
-                    guiRender.outputFrame.pack();
-                    guiRender.outputFrame.setLocation(100, 0);
+                isRunning = true;
+                Random generator = new Random();
+                ConfigureBoard(numberOfGhosts, generator);
 
                     
 		while (isRunning) {
@@ -181,9 +158,10 @@ public enum Game implements GhostObserver {
 				Thread.sleep(500);
 			} catch (InterruptedException interruptedException) {
 			}
-		}
+                }
 
-		System.out.println(GetStatistics());
+             System.out.println(GetStatistics());
+               
 	}
 
 	/**
@@ -219,12 +197,8 @@ public enum Game implements GhostObserver {
 	 * Draws the board to stdout
 	 */
 	public void Render() {
-		//System.out.print(board.toString());
+		System.out.print(board.toString());
                 rawData = board.toString();
-                System.out.println(rawData);
-                
-                guiRender.outputGame.setText(rawData);
-  
 	}
 
 	/**
