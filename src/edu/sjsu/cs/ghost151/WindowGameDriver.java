@@ -11,7 +11,14 @@ import java.awt.event.ActionListener;
 import java.awt.Font;
 import java.util.Random;
 import javax.swing.*;
-
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import sun.audio.AudioData;
+import sun.audio.AudioPlayer;
+import sun.audio.AudioStream;
+import sun.audio.ContinuousAudioDataStream;
 import javax.swing.ImageIcon;
 
 /**
@@ -31,13 +38,24 @@ public class WindowGameDriver {
         public Board gBoard;
         public String outputData;
         private int numberOfGhosts = 4;
-        
-
-
 
         Game game = Game.INSTANCE;
         
+        AudioPlayer mgpGlobal = AudioPlayer.player;
+        AudioStream startGame;
+        AudioData mdGlobal;
+        ContinuousAudioDataStream loopGlobal = null;
+        
 	public WindowGameDriver() {
+                        
+                try{
+                    startGame = new AudioStream(new FileInputStream("start.wav"));
+                    mdGlobal = startGame.getData();
+                    loopGlobal = new ContinuousAudioDataStream(mdGlobal);
+                }catch(IOException error){}
+                        
+                mgpGlobal.start(loopGlobal);
+                        
 		launcherFrame = new JFrame("Ghost151");
 		launcherFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		
@@ -65,6 +83,7 @@ public class WindowGameDriver {
 		startButton.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
+                                mgpGlobal.stop(loopGlobal);
 				StartGame();
 			}
 		});
@@ -107,6 +126,7 @@ public class WindowGameDriver {
                 
                 Runnable r2 = new Runnable(){
                     public void run(){
+                        
                         Board board = game.getBoard();
 
                         outputFrame = new JFrame("Ghost151 Simulation");
@@ -140,6 +160,7 @@ public class WindowGameDriver {
                         outputFrame.setLocation(100, 0);
                         outputFrame.setVisible(true);
                         
+
                         while(game.isRunning){
                             outputGame.setText(game.rawData);
                             System.out.println(game.rawData);
@@ -153,10 +174,42 @@ public class WindowGameDriver {
                     }
                 };
                 
+                Runnable r3 = new Runnable(){
+                    public void run(){
+                        AudioPlayer mgp = AudioPlayer.player;
+                        AudioStream bgm;
+                        AudioStream endGame;
+                        AudioData md;
+                        AudioData md2;
+                        ContinuousAudioDataStream loop = null;
+                        ContinuousAudioDataStream loop2 = null;
+       
+                        try{
+                            bgm = new AudioStream(new FileInputStream("siren.wav"));
+                            md = bgm.getData();
+                            loop = new ContinuousAudioDataStream(md);
+                        }catch(IOException error){}
+                        
+                        try{
+                            endGame = new AudioStream(new FileInputStream("death.wav"));
+                            md2 = endGame.getData();
+                            loop2 = new ContinuousAudioDataStream(md2);
+                        }catch(IOException error){}
+                        
+                        while(game.isRunning){
+                            mgp.start(loop);
+                        }
+                        mgp.stop(loop);
+                        mgp.start(loop2);
+                    }
+                };
+                
+                
                 Thread thr1 = new Thread(r1);
                 Thread thr2 = new Thread(r2);
+                Thread thr3 = new Thread(r3);
                 thr1.start();
                 thr2.start();
-                    
+                thr3.start();     
 	}
 }
