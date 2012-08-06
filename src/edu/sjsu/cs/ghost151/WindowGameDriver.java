@@ -1,23 +1,28 @@
 package edu.sjsu.cs.ghost151;
 
 
+import java.awt.Color;
 import java.awt.Container;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.Font;
 import java.util.Random;
 import javax.swing.*;
+
+import javax.swing.ImageIcon;
 
 /**
  * <b>ConsoleGameDriver</b> is responsible for instantiating the Game instance and
  * requesting the number of ghosts the user would like in the simulation.
  */
 public class WindowGameDriver {
-	public static void main(String[] args) {
-		new WindowGameDriver();
-	}
+    public static void main(String[] args) {
+        new WindowGameDriver();
+
+}
 	
 	private JFrame launcherFrame;
 	private JTextArea numberOfGhostsTextArea;
@@ -27,6 +32,9 @@ public class WindowGameDriver {
         public String outputData;
         private int numberOfGhosts = 4;
         
+
+
+
         Game game = Game.INSTANCE;
         
 	public WindowGameDriver() {
@@ -66,9 +74,9 @@ public class WindowGameDriver {
 		launcherFrame.setLocation(100, 0);
 		launcherFrame.setVisible(true);
 	}
-	
-	public void StartGame() {
 
+
+        public void StartGame() {
 		try {
 			numberOfGhosts = Integer.valueOf(numberOfGhostsTextArea.getText());
 		} catch (Exception e) {
@@ -99,7 +107,8 @@ public class WindowGameDriver {
                 
                 Runnable r2 = new Runnable(){
                     public void run(){
-                        
+                        Board board = game.getBoard();
+
                         outputFrame = new JFrame("Ghost151 Simulation");
                         outputFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
                 
@@ -110,8 +119,16 @@ public class WindowGameDriver {
                 
                         constraints.gridx = 0;
                         constraints.gridy = 0;
-                        outputGame = new JTextArea(50,50);
+                        outputGame = new JTextArea(board.ROWS+3,board.COLUMNS);
+
+                        try {
+                            outputGame.setFont(new Font(Font.MONOSPACED, Font.PLAIN, 14));
+                        } catch (Exception e) {
+                            System.out.println("WARNING: Monospace font not supported: " + e);
+                        }
                         outputGame.setText(game.rawData);
+                        outputGame.setForeground(Color.getHSBColor(225, 225, 225));
+                        outputGame.setBackground(Color.getHSBColor(328, 80, 0));
                         contentPanel.add(outputGame, constraints);
 
                         constraints.gridx = 0;
